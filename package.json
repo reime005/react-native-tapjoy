@@ -1,0 +1,38 @@
+{
+  "name": "react-native-tapjoy",
+  "description": "A React Native module that allows you to use the native Tapjoy advertiser SDK.",
+  "version": "1.0.0",
+  "main": "index.js",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/reime005/react-native-tapjoy"
+  },
+  "nativePackage": true,
+  "author": "Marius Reimer (reime005)",
+  "scripts": {
+    "start": "node node_modules/react-native/local-cli/cli.js start"
+  },
+  "license": "MIT",
+  "keywords": [
+    "react-native",
+    "react-native-tapjoy",
+    "react",
+    "native",
+    "tapjoy",
+    "advertising"
+  ],
+  "rnpm": {
+    "ios": {
+      "project": "ios/RNTapjoy.xcodeproj",
+      "sharedLibraries": [
+        "SafariServices",
+        "SystemConfiguration",
+        "AddressBook"
+      ]
+    }
+  },
+  "dependencies": {
+    "bows": "^1.6.0",
+    "es6-symbol": "^3.1.0"
+  }
+}
