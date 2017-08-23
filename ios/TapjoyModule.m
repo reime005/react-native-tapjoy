@@ -69,9 +69,11 @@ RCT_EXPORT_METHOD(showPlacement:(NSString *)placementName callback:(RCTResponseS
       
       NSArray *windows = [[UIApplication sharedApplication] windows];
       UIViewController *rootViewController = (windows.count > 0) ? [[windows objectAtIndex:0] rootViewController] : nil;
-      if (rootViewController && placement)
-          [placement showContentWithViewController: rootViewController];
-      
+      if (rootViewController && placement) {
+          dispatch_async(dispatch_get_main_queue(),  ^(void) {
+	          [placement showContentWithViewController: rootViewController];
+          });
+      }
   } else {
     NSLog(@"Tapjoy is not connected");
     NSDictionary *responseProps = @{
