@@ -15,6 +15,7 @@ RCT_EXPORT_MODULE();
 RCT_EXPORT_METHOD(initialise:(NSString *)name debug:(BOOL)debug callback:(RCTResponseSenderBlock)callback) {
   m_callback = callback;
   placementMap = [[NSMutableDictionary alloc]init];
+  placementListenerMap = [[NSMutableDictionary alloc]init];
   
   [[NSNotificationCenter defaultCenter] addObserver:self
                                            selector:@selector(tjcConnectSuccess: )
@@ -37,11 +38,13 @@ RCT_EXPORT_METHOD(addPlacement:(NSString *)placementName callback:(RCTResponseSe
   
   
   if ([Tapjoy isConnected]) {
-    TapjoyPlacementListener *placementListener = [[TapjoyPlacementListener alloc] initWithPlacementName:placementName];
+    TapjoyPlacementListener *placementListener = [[TapjoyPlacementListener alloc] initWithPlacementName:placementName tapjoyModule:self];
     
+    placementListenerMap = @{
+                     placementName : placementListener
+                     };
+  
     TJPlacement *placement = [TJPlacement placementWithName:placementName delegate:placementListener ];
-    
-    [placement setDelegate:placementListener];
     
     if (placementMap == nil) {
       placementMap = @{
@@ -123,7 +126,6 @@ RCT_EXPORT_METHOD(getCurrencyBalance:(RCTResponseSenderBlock)callback) {
 }
 
 RCT_EXPORT_METHOD(listenForEarnedCurrency:(RCTResponseSenderBlock)callback) {
-  
   [Tapjoy trackEvent:TJC_CURRENCY_EARNED_NOTIFICATION category:nil parameter1:nil parameter2:nil];
   
   NSLog(@"Tapjoy listenForEarnedCurrency");
@@ -164,10 +166,8 @@ RCT_EXPORT_METHOD(listenForEarnedCurrency:(RCTResponseSenderBlock)callback) {
 - (void) sendJSEvent:(NSString *)title props:(NSDictionary *)props
 {
   @try {
-    if (self->listening) {
       [self sendEventWithName:title
                          body:props];
-    }
   }
   @catch (NSException *err) {
     NSLog(@"An error occurred in sendJSEvent: %@", [err debugDescription]);

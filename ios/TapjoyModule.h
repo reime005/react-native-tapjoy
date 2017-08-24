@@ -21,11 +21,14 @@
 @interface TapjoyModule : RCTEventEmitter <RCTBridgeModule> {
   RCTResponseSenderBlock m_callback;
   NSMutableDictionary *placementMap;
+  NSMutableDictionary *placementListenerMap;
   TJPlacement *offerwallPlacement;
   Boolean listening;
 }
 
 @property (nonatomic, retain) AppDelegate *viewController;
+
+- (void) sendJSEvent:(NSString *)title props:(NSDictionary *)props;
 
 @end
 

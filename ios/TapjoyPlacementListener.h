@@ -15,19 +15,18 @@
 #import <React/RCTLog.h>
 #import "TapjoyModule.h"
 
-@interface TapjoyPlacementListener : RCTEventEmitter <TJPlacementDelegate> {
+@class TapjoyModule;
+
+@interface TapjoyPlacementListener : RCTEventEmitter <TJPlacementDelegate, RCTBridgeModule> {
   Boolean listening;
   NSString *m_placementName;
 }
 
-- (id)initWithPlacementName:(NSString *)placementName;
+@property (strong) TapjoyModule *tapjoyModule;
+
+- (id)initWithPlacementName:(NSString *)placementName tapjoyModule:(TapjoyModule*)tapjoyModule;
 
 // Tapjoy Events
-- (void)requestDidSucceed:(TJPlacement*)placement;
-- (void)requestDidFail:(TJPlacement*)placement error:(NSError*)error;
-- (void)contentIsReady:(TJPlacement*)placement;
-- (void)contentDidAppear:(TJPlacement*)placement;
-- (void)contentDidDisappear:(TJPlacement*)placement;
 
 @end
 

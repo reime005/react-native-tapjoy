@@ -12,11 +12,12 @@
 
 - (id)init {
   // Forward to the "designated" initialization method
-  return [self initWithPlacementName:@"default"];
+  return [self initWithPlacementName:@"default" tapjoyModule:nil];
 }
 
-- (id)initWithPlacementName:(NSString *)placementName {
+- (id)initWithPlacementName:(NSString *)placementName tapjoyModule:(TapjoyModule*)tapjoyModule {
   self = [super init];
+  _tapjoyModule = tapjoyModule;
   if (self) {
     m_placementName = placementName;
   }
@@ -29,7 +30,7 @@
   NSDictionary *evt = @{
                         @"onRequestSuccess": @"onRequestSuccess"
                         };
-  [self sendJSEvent:m_placementName props: evt];
+  [_tapjoyModule sendJSEvent:m_placementName props:evt];
 }
 
 // Called when there was a problem during connecting Tapjoy servers.
@@ -38,7 +39,7 @@
   NSDictionary *evt = @{
                         @"onRequestFailure": @"onRequestFailure"
                         };
-  [self sendJSEvent:m_placementName props: evt];
+  [_tapjoyModule sendJSEvent:m_placementName props:evt];
 }
 
 // Called when the content is actually available to display.
@@ -47,18 +48,16 @@
   NSDictionary *evt = @{
                         @"onContentReady": @"onContentReady"
                         };
-  [self sendJSEvent:m_placementName
-              props: evt];
+  [_tapjoyModule sendJSEvent:m_placementName props:evt];
 }
 
-// Called when the content is showed.
+// Called when the content is shown.
 - (void)contentDidAppear:(TJPlacement*)placement{
   NSLog(@"contentDidAppear");
   NSDictionary *evt = @{
                         @"onContentShow": @"onContentShow"
                         };
-  [self sendJSEvent:m_placementName
-              props: evt];
+  [_tapjoyModule sendJSEvent:m_placementName props:evt];
 }
 
 // Called when the content is dismissed.
@@ -67,21 +66,7 @@
   NSDictionary *evt = @{
                         @"onContentDismiss": @"onContentDismiss"
                         };
-  [self sendJSEvent:m_placementName
-              props: evt];
-}
-
-- (void) sendJSEvent:(NSString *)title props:(NSDictionary *)props
-{
-  @try {
-    if (self->listening) {
-      [self sendEventWithName:title
-                         body:props];
-    }
-  }
-  @catch (NSException *err) {
-    NSLog(@"An error occurred in sendJSEvent: %@", [err debugDescription]);
-  }
+  [_tapjoyModule sendJSEvent:m_placementName props:evt];
 }
 
 - (NSArray<NSString *> *)supportedEvents {
