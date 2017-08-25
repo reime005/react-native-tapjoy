@@ -143,7 +143,7 @@ RCT_EXPORT_METHOD(spendCurrencyAction:(nonnull NSNumber*)amount resolve:(RCTProm
     } else {
       NSNumber *balance = parameters[@"amount"];
       
-      if (balance.integerValue - amount.integerValue > 0) {
+      if (balance.integerValue - amount.integerValue >= 0) {
         [Tapjoy spendCurrency:amount.integerValue completion:^(NSDictionary *parameters, NSError *error) {
           if (error) {
             [TapjoyModule rejectPromise:reject withError:error];

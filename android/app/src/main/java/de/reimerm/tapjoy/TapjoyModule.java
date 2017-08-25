@@ -1,12 +1,20 @@
 package de.reimerm.tapjoy;
 
+import android.util.Log;
+
 import com.facebook.react.bridge.Arguments;
 import com.facebook.react.bridge.Callback;
+import com.facebook.react.bridge.Promise;
 import com.facebook.react.bridge.ReactApplicationContext;
 import com.facebook.react.bridge.ReactContextBaseJavaModule;
 import com.facebook.react.bridge.ReactMethod;
 import com.facebook.react.bridge.WritableMap;
+import com.facebook.react.uimanager.IllegalViewOperationException;
+import com.tapjoy.TJAwardCurrencyListener;
+import com.tapjoy.TJGetCurrencyBalanceListener;
 import com.tapjoy.TJPlacement;
+import com.tapjoy.TJSetUserIDListener;
+import com.tapjoy.TJSpendCurrencyListener;
 import com.tapjoy.Tapjoy;
 
 import java.util.HashMap;
@@ -28,6 +36,7 @@ public class TapjoyModule extends ReactContextBaseJavaModule {
     public static final String EARNED_CURRENCY_VALUE = "value";
     public static final String CURRENCY_BALANCE_NAME = "currencyBalance";
     public static final String CURRENCY_BALANCE_VALUE = "value";
+    public static final String TAPJOY_IS_NOT_CONNECTED = "Tapjoy is not connected.";
 
     private Map<String, TJPlacement> placementMap = new HashMap<>();
 
@@ -40,6 +49,81 @@ public class TapjoyModule extends ReactContextBaseJavaModule {
         MyTJConnectListener tjConnectListener = new MyTJConnectListener(callback);
         Tapjoy.connect(getCurrentActivity(), sdkKey, new Hashtable(), tjConnectListener);
         Tapjoy.setDebugEnabled(debug);
+    }
+
+    @ReactMethod
+    public void setUserId(final String userId, final Promise promise) {
+        if (!Tapjoy.isConnected()) {
+            promise.reject(E_LAYOUT_ERROR, TAPJOY_IS_NOT_CONNECTED);
+            return;
+        }
+
+        Tapjoy.setUserID(userId, new TJSetUserIDListener() {
+            @Override
+            public void onSetUserIDSuccess() {
+                try {
+                    promise.resolve(null);
+                } catch (RuntimeException e) {
+                    e.printStackTrace();
+                }
+            }
+
+            @Override
+            public void onSetUserIDFailure(String s) {
+                try {
+                    promise.reject(E_LAYOUT_ERROR, s);
+                } catch (RuntimeException e) {
+                    e.printStackTrace();
+                }
+            }
+        });
+    }
+
+    @ReactMethod
+    public void spendCurrencyAction(final int amount, final Promise promise) {
+        if (!Tapjoy.isConnected()) {
+            promise.reject(E_LAYOUT_ERROR, TAPJOY_IS_NOT_CONNECTED);
+            return;
+        }
+
+        Tapjoy.getCurrencyBalance(new TJGetCurrencyBalanceListener() {
+
+            @Override
+            public void onGetCurrencyBalanceResponse(String s, int i) {
+                if (i - amount >= 0) {
+                    try {
+                        Tapjoy.spendCurrency(amount, new TJSpendCurrencyListener() {
+                            @Override
+                            public void onSpendCurrencyResponse(String s, int i) {
+                                try {
+                                    promise.resolve(null);
+                                } catch (RuntimeException e) {
+                                    e.printStackTrace();
+                                }
+                            }
+
+                            @Override
+                            public void onSpendCurrencyResponseFailure(String s) {
+                                try {
+                                    promise.reject(E_LAYOUT_ERROR, s);
+                                } catch (RuntimeException e) {
+                                    e.printStackTrace();
+                                }
+                            }
+                        });
+                    } catch (IllegalViewOperationException e) {
+                        promise.reject(E_LAYOUT_ERROR, e);
+                    }
+                } else {
+                    promise.reject(E_LAYOUT_ERROR, "Not enough currency");
+                }
+            }
+
+            @Override
+            public void onGetCurrencyBalanceResponseFailure(String s) {
+
+            }
+        });
     }
 
     @ReactMethod
@@ -77,7 +161,7 @@ public class TapjoyModule extends ReactContextBaseJavaModule {
 
     private void responseNotConnected(Callback callback) {
         WritableMap responseMap = Arguments.createMap();
-        responseMap.putString(E_LAYOUT_ERROR, "Tapjoy is not connected.");
+        responseMap.putString(E_LAYOUT_ERROR, TAPJOY_IS_NOT_CONNECTED);
         callback.invoke(responseMap);
     }
 

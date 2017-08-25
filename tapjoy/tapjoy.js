@@ -27,6 +27,10 @@ export class Tapjoy extends Singleton {
         instance.eventHandlers = {};
     }
 
+    setUserId(userId) {
+        return this.tapjoy.setUserId(userId);
+    }
+
     initialise() {
         if (Platform.OS === 'android' && this.options.gcmSenderIdAndroid != null) {
             this.tapjoy.registerForPushNotifications(this.options.gcmSenderIdAndroid);
@@ -37,9 +41,7 @@ export class Tapjoy extends Singleton {
     }
 
     spendCurrency(amount) {
-        return this.tapjoy.spendCurrencyAction(amount).catch((error) => {
-                console.log(error);
-            });
+        return this.tapjoy.spendCurrencyAction(amount);
     }
 
     requestContent(name) {
