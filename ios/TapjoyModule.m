@@ -34,9 +34,18 @@ RCT_EXPORT_METHOD(initialise:(NSString *)name debug:(BOOL)debug callback:(RCTRes
   [Tapjoy connect:name];
 }
 
+RCT_EXPORT_METHOD(setUserId:(nonnull NSString *)userId resolve:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
+  [Tapjoy setUserIDWithCompletion:userId completion:^(BOOL success, NSError *error) {
+    if (error != nil) {
+      NSLog(@"Tapjoy setUserIDWithCompletion error");
+      [TapjoyModule rejectPromise:reject withError:error];
+    } else {
+      resolve(nil);
+    }
+  }];
+}
+
 RCT_EXPORT_METHOD(addPlacement:(NSString *)placementName callback:(RCTResponseSenderBlock)callback) {
-  
-  
   if ([Tapjoy isConnected]) {
     TapjoyPlacementListener *placementListener = [[TapjoyPlacementListener alloc] initWithPlacementName:placementName tapjoyModule:self];
     
@@ -125,6 +134,31 @@ RCT_EXPORT_METHOD(getCurrencyBalance:(RCTResponseSenderBlock)callback) {
   }
 }
 
+RCT_EXPORT_METHOD(spendCurrencyAction:(nonnull NSNumber*)amount resolve:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
+  NSLog(@"Tapjoy spendCurrencyAction");
+  
+  [Tapjoy getCurrencyBalanceWithCompletion:^(NSDictionary *parameters, NSError *error) {
+    if (error != nil) {
+      NSLog(@"Tapjoy getCurrencyBalanceWithCompletion error");
+    } else {
+      NSNumber *balance = parameters[@"amount"];
+      
+      if (balance.integerValue - amount.integerValue > 0) {
+        [Tapjoy spendCurrency:amount.integerValue completion:^(NSDictionary *parameters, NSError *error) {
+          if (error) {
+            [TapjoyModule rejectPromise:reject withError:error];
+          } else {
+            resolve(nil);
+          }
+        }];
+      } else {
+        [TapjoyModule rejectPromise:reject withMessage:@"Not enough currency"];
+        NSLog(@"Tapjoy spendCurrency error");
+      }
+    }
+  }];
+}
+
 RCT_EXPORT_METHOD(listenForEarnedCurrency:(RCTResponseSenderBlock)callback) {
   [Tapjoy trackEvent:TJC_CURRENCY_EARNED_NOTIFICATION category:nil parameter1:nil parameter2:nil];
   
@@ -202,6 +236,16 @@ RCT_EXPORT_METHOD(listenForEarnedCurrency:(RCTResponseSenderBlock)callback) {
 
 - (NSArray<NSString *> *)supportedEvents {
   return @[TJ_EARNED_CURRENCY_EVENT, TJ_PLACEMENT_OFFERWALL_EVENT];
+}
+
+#pragma mark - Helper Fuctions
+
++ (void)rejectPromise:(RCTPromiseRejectBlock)reject withError:(NSError *)error {
+  reject([NSString stringWithFormat:@"%ld", error.code], error.localizedDescription, error);
+}
+
++ (void)rejectPromise:(RCTPromiseRejectBlock)reject withMessage:(NSString *)message {
+  reject([NSString stringWithFormat:@"%@", message], message, nil);
 }
 
 @end

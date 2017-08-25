@@ -36,6 +36,12 @@ export class Tapjoy extends Singleton {
         return promisify('initialise', this.tapjoy)(sdkKey, this.options.debug);
     }
 
+    spendCurrency(amount) {
+        return this.tapjoy.spendCurrencyAction(amount).catch((error) => {
+                console.log(error);
+            });
+    }
+
     requestContent(name) {
         return promisify('requestContent', this.tapjoy)(name);
     }
