@@ -1,7 +1,7 @@
 {
   "name": "react-native-tapjoy",
   "description": "A React Native module that allows you to use the native Tapjoy advertiser SDK.",
-  "version": "1.1.1",
+  "version": "1.1.2",
   "main": "index.js",
   "repository": {
     "type": "git",
