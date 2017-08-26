@@ -2,8 +2,13 @@ package de.reimerm.tapjoy;
 
 import com.facebook.react.bridge.Arguments;
 import com.facebook.react.bridge.Callback;
+import com.facebook.react.bridge.Promise;
+import com.facebook.react.bridge.ReactContext;
 import com.facebook.react.bridge.WritableMap;
+import com.facebook.react.modules.core.DeviceEventManagerModule;
 import com.tapjoy.TJGetCurrencyBalanceListener;
+
+import static de.reimerm.tapjoy.TapjoyModule.E_LAYOUT_ERROR;
 
 /**
  * Created by marius on 01/03/17.
@@ -11,10 +16,10 @@ import com.tapjoy.TJGetCurrencyBalanceListener;
 
 public class MyTJGetCurrencyBalanceListener implements TJGetCurrencyBalanceListener {
 
-    private Callback callback;
+    private final Promise promise;
 
-    public MyTJGetCurrencyBalanceListener(Callback callback) {
-        this.callback = callback;
+    public MyTJGetCurrencyBalanceListener(Promise promise) {
+        this.promise = promise;
     }
 
     @Override
@@ -24,20 +29,11 @@ public class MyTJGetCurrencyBalanceListener implements TJGetCurrencyBalanceListe
         responseMap.putString(TapjoyModule.CURRENCY_BALANCE_NAME, s);
         responseMap.putInt(TapjoyModule.CURRENCY_BALANCE_VALUE, i);
 
-        if (callback != null) {
-            callback.invoke(null, responseMap);
-            callback = null;
-        }
+        TapjoyModule.promiseResolve(promise, responseMap);
     }
 
     @Override
     public void onGetCurrencyBalanceResponseFailure(String s) {
-        WritableMap responseMap = Arguments.createMap();
-        responseMap.putString(TapjoyModule.E_LAYOUT_ERROR, s);
-        try {
-            callback.invoke(responseMap);
-        } catch (RuntimeException e) {
-            e.printStackTrace();
-        }
+        TapjoyModule.promiseReject(promise, E_LAYOUT_ERROR, s);
     }
 }

@@ -45,24 +45,36 @@ export class Tapjoy extends Singleton {
     }
 
     requestContent(name) {
-        return promisify('requestContent', this.tapjoy)(name);
+        return this.tapjoy.requestContent(name);
     }
 
     addPlacement(name, callback) {
+        let oldSub = this.eventHandlers[name];
+        if (oldSub) {
+            oldSub.remove();
+            this.eventHandlers[name] = null;
+        }
+
         const sub = this._on(name, callback, TapjoyModuleEvt);
         this.tapjoy.addPlacement(name, callback);
         return promisify(() => sub, this.tapjoy)(sub);
     }
 
     showPlacement(name) {
-        return promisify('showPlacement', this.tapjoy)(name);
+        return this.tapjoy.showPlacement(name);
     }
 
     getCurrencyBalance() {
-        return promisify('getCurrencyBalance', this.tapjoy)();
+        return this.tapjoy.getCurrencyBalance();
     }
 
     listenForEarnedCurrency(callback) {
+        let oldSub = this.eventHandlers['earnedCurrency'];
+        if (oldSub) {
+            oldSub.remove();
+            this.eventHandlers['earnedCurrency'] = null;
+        }
+
         const sub = this._on('earnedCurrency', callback, TapjoyModuleEvt);
         this.tapjoy.listenForEarnedCurrency(callback);
         return promisify(() => sub, this.tapjoy)(sub);

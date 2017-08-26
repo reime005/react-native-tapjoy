@@ -20,9 +20,9 @@
 
 @interface TapjoyModule : RCTEventEmitter <RCTBridgeModule> {
   RCTResponseSenderBlock m_callback;
+  
   NSMutableDictionary *placementMap;
   NSMutableDictionary *placementListenerMap;
-  TJPlacement *offerwallPlacement;
   Boolean listening;
 }
 

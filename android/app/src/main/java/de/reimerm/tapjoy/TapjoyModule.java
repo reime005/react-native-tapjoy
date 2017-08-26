@@ -37,6 +37,7 @@ public class TapjoyModule extends ReactContextBaseJavaModule {
     public static final String CURRENCY_BALANCE_NAME = "currencyBalance";
     public static final String CURRENCY_BALANCE_VALUE = "value";
     public static final String TAPJOY_IS_NOT_CONNECTED = "Tapjoy is not connected.";
+    public static final String NOT_ENOUGH_CURRENCY = "Not enough currency";
 
     private Map<String, TJPlacement> placementMap = new HashMap<>();
 
@@ -54,27 +55,19 @@ public class TapjoyModule extends ReactContextBaseJavaModule {
     @ReactMethod
     public void setUserId(final String userId, final Promise promise) {
         if (!Tapjoy.isConnected()) {
-            promise.reject(E_LAYOUT_ERROR, TAPJOY_IS_NOT_CONNECTED);
+            promiseReject(promise, E_LAYOUT_ERROR, TAPJOY_IS_NOT_CONNECTED);
             return;
         }
 
         Tapjoy.setUserID(userId, new TJSetUserIDListener() {
             @Override
             public void onSetUserIDSuccess() {
-                try {
-                    promise.resolve(null);
-                } catch (RuntimeException e) {
-                    e.printStackTrace();
-                }
+                promiseResolve(promise, null);
             }
 
             @Override
             public void onSetUserIDFailure(String s) {
-                try {
-                    promise.reject(E_LAYOUT_ERROR, s);
-                } catch (RuntimeException e) {
-                    e.printStackTrace();
-                }
+                promiseReject(promise, E_LAYOUT_ERROR, s);
             }
         });
     }
@@ -82,7 +75,7 @@ public class TapjoyModule extends ReactContextBaseJavaModule {
     @ReactMethod
     public void spendCurrencyAction(final int amount, final Promise promise) {
         if (!Tapjoy.isConnected()) {
-            promise.reject(E_LAYOUT_ERROR, TAPJOY_IS_NOT_CONNECTED);
+            promiseReject(promise, E_LAYOUT_ERROR, TAPJOY_IS_NOT_CONNECTED);
             return;
         }
 
@@ -95,27 +88,19 @@ public class TapjoyModule extends ReactContextBaseJavaModule {
                         Tapjoy.spendCurrency(amount, new TJSpendCurrencyListener() {
                             @Override
                             public void onSpendCurrencyResponse(String s, int i) {
-                                try {
-                                    promise.resolve(null);
-                                } catch (RuntimeException e) {
-                                    e.printStackTrace();
-                                }
+                                promiseResolve(promise, null);
                             }
 
                             @Override
                             public void onSpendCurrencyResponseFailure(String s) {
-                                try {
-                                    promise.reject(E_LAYOUT_ERROR, s);
-                                } catch (RuntimeException e) {
-                                    e.printStackTrace();
-                                }
+                                promiseReject(promise, E_LAYOUT_ERROR, s);
                             }
                         });
                     } catch (IllegalViewOperationException e) {
-                        promise.reject(E_LAYOUT_ERROR, e);
+                        promiseReject(promise, E_LAYOUT_ERROR, e.getLocalizedMessage());
                     }
                 } else {
-                    promise.reject(E_LAYOUT_ERROR, "Not enough currency");
+                    promiseReject(promise, E_LAYOUT_ERROR, NOT_ENOUGH_CURRENCY);
                 }
             }
 
@@ -145,17 +130,17 @@ public class TapjoyModule extends ReactContextBaseJavaModule {
     }
 
     @ReactMethod
-    public void getCurrencyBalance(final Callback callback) {
+    public void getCurrencyBalance(final Promise promise) {
         if (Tapjoy.isConnected()) {
             runOnUiThread(new Thread() {
                 @Override
                 public void run() {
-                    Tapjoy.getCurrencyBalance(new MyTJGetCurrencyBalanceListener(callback));
+                    Tapjoy.getCurrencyBalance(new MyTJGetCurrencyBalanceListener(promise));
                     super.run();
                 }
             });
         } else {
-            responseNotConnected(callback);
+            promiseReject(promise, E_LAYOUT_ERROR, TAPJOY_IS_NOT_CONNECTED);
         }
     }
 
@@ -181,7 +166,7 @@ public class TapjoyModule extends ReactContextBaseJavaModule {
     }
 
     @ReactMethod
-    public void showPlacement(String placementName, Callback callback) {
+    public void showPlacement(String placementName, final Promise promise) {
         if (Tapjoy.isConnected()) {
             TJPlacement placement = placementMap.get(placementName);
             if (placement == null) {
@@ -191,13 +176,15 @@ public class TapjoyModule extends ReactContextBaseJavaModule {
             if (placement.isContentReady()) {
                 placement.showContent();
             }
+
+            promiseResolve(promise, null);
         } else {
-            responseNotConnected(callback);
+            promiseReject(promise, E_LAYOUT_ERROR, TAPJOY_IS_NOT_CONNECTED);
         }
     }
 
     @ReactMethod
-    public void requestContent(String placementName, Callback callback) {
+    public void requestContent(String placementName, final Promise promise) {
         if (Tapjoy.isConnected()) {
             TJPlacement placement = placementMap.get(placementName);
             if (placement == null) {
@@ -205,8 +192,26 @@ public class TapjoyModule extends ReactContextBaseJavaModule {
             }
 
             placement.requestContent();
+
+            promiseResolve(promise, null);
         } else {
-            responseNotConnected(callback);
+            promiseReject(promise, E_LAYOUT_ERROR, TAPJOY_IS_NOT_CONNECTED);
+        }
+    }
+
+    public static void promiseReject(final Promise promise, String code, String message) {
+        try {
+            promise.reject(code, message);
+        } catch (RuntimeException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public static void promiseResolve(final Promise promise, final Object value) {
+        try {
+            promise.resolve(value);
+        } catch (RuntimeException e) {
+            e.printStackTrace();
         }
     }
 
