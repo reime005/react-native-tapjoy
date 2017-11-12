@@ -71,22 +71,16 @@ RCT_EXPORT_METHOD(addPlacement:(NSString *)placementName callback:(RCTResponseSe
 RCT_EXPORT_METHOD(showPlacement:(NSString *)placementName resolve:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
   NSLog(@"Tapjoy showPlacement");
   if ([Tapjoy isConnected]) {
-      
-    UIViewController *rootController =(UIViewController*)[[(AppDelegate*)
-                                                           [[UIApplication sharedApplication]delegate] window] rootViewController];
     TJPlacement *placement = [placementMap objectForKey:placementName];
     
-      
-      NSArray *windows = [[UIApplication sharedApplication] windows];
-      UIViewController *rootViewController = (windows.count > 0) ? [[windows objectAtIndex:0] rootViewController] : nil;
-      if (rootViewController && placement) {
-          dispatch_async(dispatch_get_main_queue(),  ^(void) {
-	          [placement showContentWithViewController: rootViewController];
-          });
-        resolve(nil);
-      } else {
-        [TapjoyModule rejectPromise:reject withMessage:@"Tapjoy showPlacement error"];
-      }
+    if (placement) {
+        dispatch_async(dispatch_get_main_queue(),  ^(void) {
+          [placement showContentWithViewController: [UIApplication sharedApplication].delegate.window.rootViewController];
+        });
+      resolve(nil);
+    } else {
+      [TapjoyModule rejectPromise:reject withMessage:@"Tapjoy showPlacement error"];
+    }
   } else {
     NSLog(@"Tapjoy is not connected");
     [TapjoyModule rejectPromise:reject withMessage:@"Tapjoy is not connected"];
