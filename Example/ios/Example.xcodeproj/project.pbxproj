@@ -20,13 +20,13 @@
 		13B07FBF1A68108700A75B9A /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 13B07FB51A68108700A75B9A /* Images.xcassets */; };
 		13B07FC11A68108700A75B9A /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 13B07FB71A68108700A75B9A /* main.m */; };
 		146834051AC3E58100842450 /* libReact.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 146834041AC3E56700842450 /* libReact.a */; };
+		297534061FD8F2930093C8D1 /* libRNTapjoy.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 297534051FD8F1730093C8D1 /* libRNTapjoy.a */; };
 		40056CEBF055440D8EF89302 /* SystemConfiguration.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 72979BE8D92E4932B97AC6BB /* SystemConfiguration.framework */; };
 		4B5BBB5728C44D4DBA2EAB9A /* libRCTActionSheet.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 32097B1CC3504CA8B2F9CEF8 /* libRCTActionSheet.a */; };
 		4C6C3A29957B5F6680323CA9 /* libPods-Example.a in Frameworks */ = {isa = PBXBuildFile; fileRef = AE62CC944D43FC4FDB095E47 /* libPods-Example.a */; };
 		5E9157361DD0AC6A00FF2AA8 /* libRCTAnimation.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 5E9157331DD0AC6500FF2AA8 /* libRCTAnimation.a */; };
 		832341BD1AAA6AB300B99B32 /* libRCTText.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 832341B51AAA6A8300B99B32 /* libRCTText.a */; };
 		93C067AEDBE94990AD87A998 /* AddressBook.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2D54EFFA62374DE2AC2B0E74 /* AddressBook.framework */; };
-		A73210A80C9645CFB6531B50 /* libRNTapjoy.a in Frameworks */ = {isa = PBXBuildFile; fileRef = F685116E0199494A808EE172 /* libRNTapjoy.a */; };
 		F2377B67C085471B9F17A010 /* SafariServices.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 22D4A81AAE85489197F3DA13 /* SafariServices.framework */; };
 /* End PBXBuildFile section */
 
@@ -87,9 +87,9 @@
 			remoteGlobalIDString = 83CBBA2E1A601D0E00E9B192;
 			remoteInfo = React;
 		};
-		295E277F1E958321001FA585 /* PBXContainerItemProxy */ = {
+		297534041FD8F1730093C8D1 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
-			containerPortal = 71BC1DDCD66946809DAA23EC /* RNTapjoy.xcodeproj */;
+			containerPortal = F3EA47C265B944F693DEB431 /* RNTapjoy.xcodeproj */;
 			proxyType = 2;
 			remoteGlobalIDString = 29911A3D1E9028F600409FC6;
 			remoteInfo = RNTapjoy;
@@ -237,12 +237,12 @@
 		2D54EFFA62374DE2AC2B0E74 /* AddressBook.framework */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = wrapper.framework; name = AddressBook.framework; path = System/Library/Frameworks/AddressBook.framework; sourceTree = SDKROOT; };
 		32097B1CC3504CA8B2F9CEF8 /* libRCTActionSheet.a */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = archive.ar; path = libRCTActionSheet.a; sourceTree = "<group>"; };
 		5E91572D1DD0AC6500FF2AA8 /* RCTAnimation.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = RCTAnimation.xcodeproj; path = "../node_modules/react-native/Libraries/NativeAnimation/RCTAnimation.xcodeproj"; sourceTree = "<group>"; };
-		71BC1DDCD66946809DAA23EC /* RNTapjoy.xcodeproj */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = "wrapper.pb-project"; name = RNTapjoy.xcodeproj; path = "../node_modules/react-native-tapjoy/ios/RNTapjoy.xcodeproj"; sourceTree = "<group>"; };
 		72979BE8D92E4932B97AC6BB /* SystemConfiguration.framework */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = wrapper.framework; name = SystemConfiguration.framework; path = System/Library/Frameworks/SystemConfiguration.framework; sourceTree = SDKROOT; };
 		78C398B01ACF4ADC00677621 /* RCTLinking.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = RCTLinking.xcodeproj; path = "../node_modules/react-native/Libraries/LinkingIOS/RCTLinking.xcodeproj"; sourceTree = "<group>"; };
 		832341B01AAA6A8300B99B32 /* RCTText.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = RCTText.xcodeproj; path = "../node_modules/react-native/Libraries/Text/RCTText.xcodeproj"; sourceTree = "<group>"; };
 		AE62CC944D43FC4FDB095E47 /* libPods-Example.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-Example.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		CC6D30B3E8B2566F0C4A995F /* Pods-Example.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Example.debug.xcconfig"; path = "Pods/Target Support Files/Pods-Example/Pods-Example.debug.xcconfig"; sourceTree = "<group>"; };
+		F3EA47C265B944F693DEB431 /* RNTapjoy.xcodeproj */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = "wrapper.pb-project"; name = RNTapjoy.xcodeproj; path = "../node_modules/react-native-tapjoy/ios/RNTapjoy.xcodeproj"; sourceTree = "<group>"; };
 		F685116E0199494A808EE172 /* libRNTapjoy.a */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = archive.ar; path = libRNTapjoy.a; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -263,7 +263,7 @@
 				00C302EA1ABCBA2D00DB3ED1 /* libRCTVibration.a in Frameworks */,
 				139FDEF61B0652A700C62182 /* libRCTWebSocket.a in Frameworks */,
 				4B5BBB5728C44D4DBA2EAB9A /* libRCTActionSheet.a in Frameworks */,
-				A73210A80C9645CFB6531B50 /* libRNTapjoy.a in Frameworks */,
+				297534061FD8F2930093C8D1 /* libRNTapjoy.a in Frameworks */,
 				F2377B67C085471B9F17A010 /* SafariServices.framework in Frameworks */,
 				40056CEBF055440D8EF89302 /* SystemConfiguration.framework in Frameworks */,
 				93C067AEDBE94990AD87A998 /* AddressBook.framework in Frameworks */,
@@ -363,10 +363,19 @@
 			name = Products;
 			sourceTree = "<group>";
 		};
-		295E27631E958321001FA585 /* Products */ = {
+		2926EF131FD8E98800C7F1ED /* Recovered References */ = {
 			isa = PBXGroup;
 			children = (
-				295E27801E958321001FA585 /* libRNTapjoy.a */,
+				32097B1CC3504CA8B2F9CEF8 /* libRCTActionSheet.a */,
+				F685116E0199494A808EE172 /* libRNTapjoy.a */,
+			);
+			name = "Recovered References";
+			sourceTree = "<group>";
+		};
+		297533E81FD8F1730093C8D1 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				297534051FD8F1730093C8D1 /* libRNTapjoy.a */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -412,7 +421,7 @@
 				832341B01AAA6A8300B99B32 /* RCTText.xcodeproj */,
 				00C302DF1ABCB9EE00DB3ED1 /* RCTVibration.xcodeproj */,
 				139FDEE61B06529A00C62182 /* RCTWebSocket.xcodeproj */,
-				71BC1DDCD66946809DAA23EC /* RNTapjoy.xcodeproj */,
+				F3EA47C265B944F693DEB431 /* RNTapjoy.xcodeproj */,
 			);
 			name = Libraries;
 			sourceTree = "<group>";
@@ -434,6 +443,7 @@
 				83CBBA001A601CBA00E9B192 /* Products */,
 				9A23B63DE350407EB393FA62 /* Frameworks */,
 				6BF291E74EDC19D52FB7D4DD /* Pods */,
+				2926EF131FD8E98800C7F1ED /* Recovered References */,
 			);
 			indentWidth = 2;
 			sourceTree = "<group>";
@@ -548,8 +558,8 @@
 					ProjectRef = 146833FF1AC3E56700842450 /* React.xcodeproj */;
 				},
 				{
-					ProductGroup = 295E27631E958321001FA585 /* Products */;
-					ProjectRef = 71BC1DDCD66946809DAA23EC /* RNTapjoy.xcodeproj */;
+					ProductGroup = 297533E81FD8F1730093C8D1 /* Products */;
+					ProjectRef = F3EA47C265B944F693DEB431 /* RNTapjoy.xcodeproj */;
 				},
 			);
 			projectRoot = "";
@@ -616,11 +626,11 @@
 			remoteRef = 146834031AC3E56700842450 /* PBXContainerItemProxy */;
 			sourceTree = BUILT_PRODUCTS_DIR;
 		};
-		295E27801E958321001FA585 /* libRNTapjoy.a */ = {
+		297534051FD8F1730093C8D1 /* libRNTapjoy.a */ = {
 			isa = PBXReferenceProxy;
 			fileType = archive.ar;
 			path = libRNTapjoy.a;
-			remoteRef = 295E277F1E958321001FA585 /* PBXContainerItemProxy */;
+			remoteRef = 297534041FD8F1730093C8D1 /* PBXContainerItemProxy */;
 			sourceTree = BUILT_PRODUCTS_DIR;
 		};
 		3DAD3E841DF850E9000B6D8A /* libRCTImage-tvOS.a */ = {
@@ -777,9 +787,13 @@
 			files = (
 			);
 			inputPaths = (
+				"${SRCROOT}/Pods/Target Support Files/Pods-Example/Pods-Example-resources.sh",
+				"${PODS_ROOT}/TapjoySDK/TapjoySDK_iOS_v11.11.1/Libraries/Tapjoy.embeddedframework/Resources/TapjoyResources.bundle",
+				"${PODS_ROOT}/TapjoySDK/TapjoySDK_iOS_v11.11.1/Libraries/Tapjoy.embeddedframework/Tapjoy.framework/Versions/A/Resources/TapjoyResources.bundle",
 			);
 			name = "[CP] Copy Pods Resources";
 			outputPaths = (
+				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}",
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
@@ -792,13 +806,16 @@
 			files = (
 			);
 			inputPaths = (
+				"${PODS_PODFILE_DIR_PATH}/Podfile.lock",
+				"${PODS_ROOT}/Manifest.lock",
 			);
 			name = "[CP] Check Pods Manifest.lock";
 			outputPaths = (
+				"$(DERIVED_FILE_DIR)/Pods-Example-checkManifestLockResult.txt",
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "diff \"${PODS_ROOT}/../Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n";
+			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
 			showEnvVarsInLog = 0;
 		};
 		F209682CEFE8CBCF4F0AC16D /* [CP] Embed Pods Frameworks */ = {
@@ -850,6 +867,17 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CURRENT_PROJECT_VERSION = 1;
 				DEAD_CODE_STRIPPING = NO;
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)/Frameworks/**",
+					"$(PROJECT_DIR)/Pods/**",
+				);
+				HEADER_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(SRCROOT)/../node_modules/react-native-tapjoy/ios/**",
+					"$(SRCROOT)/Frameworks/**",
+					"$(SRCROOT)/Pods/**",
+				);
 				INFOPLIST_FILE = Example/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				LIBRARY_SEARCH_PATHS = (
@@ -873,6 +901,17 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CURRENT_PROJECT_VERSION = 1;
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)/Frameworks/**",
+					"$(PROJECT_DIR)/Pods/**",
+				);
+				HEADER_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(SRCROOT)/../node_modules/react-native-tapjoy/ios/**",
+					"$(SRCROOT)/Frameworks/**",
+					"$(SRCROOT)/Pods/**",
+				);
 				INFOPLIST_FILE = Example/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				LIBRARY_SEARCH_PATHS = (

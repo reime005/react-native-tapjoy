@@ -176,8 +176,8 @@
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
 					"${BUILT_PRODUCTS_DIR}",
-					"${SRCROOT}/../../../ios/Frameworks/**",
-					"${SRCROOT}/../../../ios/Pods/TapjoySDK",
+					"${SRCROOT}/../../../ios/Frameworks/TapjoySDK/**",
+					"${SRCROOT}/../../../ios/Pods/TapjoySDK/**",
 				);
 				HEADER_SEARCH_PATHS = (
 					"$(inherited)",
@@ -202,13 +202,13 @@
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
 					"${BUILT_PRODUCTS_DIR}",
-					"${SRCROOT}/../../../ios/Frameworks/**",
-					"${SRCROOT}/../../../ios/Pods/TapjoySDK",
+					"${SRCROOT}/../../../ios/Frameworks/TapjoySDK/**",
+					"${SRCROOT}/../../../ios/Pods/TapjoySDK/**",
 				);
 				HEADER_SEARCH_PATHS = (
 					"$(inherited)",
-					"${SRCROOT}/../../../ios/**",
 					"$(SRCROOT)/../../react-native/React/**",
+					"${SRCROOT}/../../../ios/**",
 				);
 				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
 				OTHER_LDFLAGS = "-ObjC";
