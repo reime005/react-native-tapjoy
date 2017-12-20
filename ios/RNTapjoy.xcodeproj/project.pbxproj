@@ -175,14 +175,14 @@
 				CLANG_WARN_SUSPICIOUS_MOVE = YES;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
-					"${BUILT_PRODUCTS_DIR}",
-					"${SRCROOT}/../../../ios/Frameworks/TapjoySDK/**",
-					"${SRCROOT}/../../../ios/Pods/TapjoySDK/**",
+					"${BUILT_PRODUCTS_DIR}/**",
+					"${SRCROOT}/../../../ios/**",
 				);
 				HEADER_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(SRCROOT)/../../react-native/React/**",
-					"${SRCROOT}/../../../ios/**",
+					"${SRCROOT}/../../../ios/Frameworks/TapjoySDK/**",
+					"$(BUILT_PRODUCTS_DIR)/**",
 				);
 				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
 				OTHER_LDFLAGS = "-ObjC";
@@ -201,14 +201,14 @@
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
-					"${BUILT_PRODUCTS_DIR}",
-					"${SRCROOT}/../../../ios/Frameworks/TapjoySDK/**",
-					"${SRCROOT}/../../../ios/Pods/TapjoySDK/**",
+					"${BUILT_PRODUCTS_DIR}/**",
+					"${SRCROOT}/../../../ios/**",
 				);
 				HEADER_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(SRCROOT)/../../react-native/React/**",
-					"${SRCROOT}/../../../ios/**",
+					"${SRCROOT}/../../../ios/Frameworks/TapjoySDK/**",
+					"$(BUILT_PRODUCTS_DIR)/**",
 				);
 				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
 				OTHER_LDFLAGS = "-ObjC";
