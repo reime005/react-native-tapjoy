@@ -1,4 +1,4 @@
-package de.reimerm.tapjoy;
+package com.mariusreimer.tapjoy;
 
 import com.facebook.react.ReactPackage;
 import com.facebook.react.bridge.JavaScriptModule;

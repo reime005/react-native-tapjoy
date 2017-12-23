@@ -1,4 +1,4 @@
-package de.reimerm.tapjoy;
+package com.mariusreimer.tapjoy;
 
 /**
  * Created by marius on 01/03/17.

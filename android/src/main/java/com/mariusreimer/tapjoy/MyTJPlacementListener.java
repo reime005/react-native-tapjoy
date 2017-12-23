@@ -1,4 +1,4 @@
-package de.reimerm.tapjoy;
+package com.mariusreimer.tapjoy;
 
 import android.util.Log;
 

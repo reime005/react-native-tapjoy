@@ -1,14 +1,11 @@
-package de.reimerm.tapjoy;
+package com.mariusreimer.tapjoy;
 
 import com.facebook.react.bridge.Arguments;
-import com.facebook.react.bridge.Callback;
 import com.facebook.react.bridge.Promise;
-import com.facebook.react.bridge.ReactContext;
 import com.facebook.react.bridge.WritableMap;
-import com.facebook.react.modules.core.DeviceEventManagerModule;
 import com.tapjoy.TJGetCurrencyBalanceListener;
 
-import static de.reimerm.tapjoy.TapjoyModule.E_LAYOUT_ERROR;
+import static com.mariusreimer.tapjoy.TapjoyModule.E_LAYOUT_ERROR;
 
 /**
  * Created by marius on 01/03/17.

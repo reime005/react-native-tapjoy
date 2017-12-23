@@ -1,6 +1,4 @@
-package de.reimerm.tapjoy;
-
-import android.util.Log;
+package com.mariusreimer.tapjoy;
 
 import com.facebook.react.bridge.Arguments;
 import com.facebook.react.bridge.Callback;
@@ -10,7 +8,6 @@ import com.facebook.react.bridge.ReactContextBaseJavaModule;
 import com.facebook.react.bridge.ReactMethod;
 import com.facebook.react.bridge.WritableMap;
 import com.facebook.react.uimanager.IllegalViewOperationException;
-import com.tapjoy.TJAwardCurrencyListener;
 import com.tapjoy.TJGetCurrencyBalanceListener;
 import com.tapjoy.TJPlacement;
 import com.tapjoy.TJSetUserIDListener;
