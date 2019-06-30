@@ -1,6 +1,6 @@
 Pod::Spec.new do |s|
   s.name         = "RNTapjoy"
-  s.version      = "0.14.3"
+  s.version      = "2.0.0"
   s.license      = "MIT"
   s.homepage     = "https://github.com/reime005/react-native-tapjoy"
   s.authors      = { 'Marius Reimer' => 'reime005@gmail.com' }
@@ -14,17 +14,17 @@ Pod::Spec.new do |s|
     'CFNetwork', 'Security', 'SystemConfiguration'
   ]
 
-  s.platform     = :ios, "7.0"
+  s.platform     = :ios, "12.0.3"
   s.dependency 'React’
 
   s.xcconfig = {
     'HEADER_SEARCH_PATHS' => [
-        "$(inherited)", 
-        "${SRCROOT}/../../React/**", 
+        "$(inherited)",
+        "${SRCROOT}/../../React/**",
         "${SRCROOT}/../../node_modules/react-native/**"
       ].join(' '),
     'FRAMEWORK_SEARCH_PATHS' => [
-        "$(inherited)", 
+        "$(inherited)",
         "${PODS_ROOT}/TapjoySDK/**”,
       ].join(' '),
     'OTHER_LDFLAGS' => '$(inherited) -ObjC'

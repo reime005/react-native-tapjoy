@@ -1,1 +1,0 @@
-module.exports = require('./tapjoy/tapjoy.js');
