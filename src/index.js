@@ -37,7 +37,7 @@ export class Tapjoy {
     }
 
     requestContent(name: string) {
-        return this.requestContent(name);
+        return TapjoyModule.requestContent(name);
     }
 
     addPlacement(name: string, callback: () => {}) {
@@ -53,7 +53,7 @@ export class Tapjoy {
     }
 
     showPlacement(name: string) {
-        return this.showPlacement(name);
+        return TapjoyModule.showPlacement(name);
     }
 
     getCurrencyBalance() {

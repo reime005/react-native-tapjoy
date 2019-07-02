@@ -1,33 +1,25 @@
-import { useRef, useEffect, useCallback } from "react";
+import { useRef, useEffect, useCallback } from 'react';
 
-import { Tapjoy } from ".";
+import { Tapjoy } from '.';
 
 export const useTapjoy = options => {
   const tapjoy = useRef(new Tapjoy(options));
 
-  const initialiseTapjoy = useCallback(
-    async (onConnectionChange) => {
-      const foo = await tapjoy.current.initialise(onConnectionChange)
-      console.warn(foo);
+  const initialiseTapjoy = useCallback(() => {
+    return tapjoy.current.initialise();
+  }, []);
 
-    },
-    [],
-  )
+  const addTapjoyPlacement = useCallback(async name => {
+   return tapjoy.current.addPlacement(name);
+  }, []);
 
-  const addTapjoyPlacement = useCallback(
-    async (name) => {
-      const foo = await tapjoy.current.addPlacement(name, (t) => {
-        console.warn(t);
-      })
+  const requestTapjoyPlacementContent = useCallback(async name => {
+   return tapjoy.current.requestContent(name);
+  }, []);
 
-      console.warn(foo);
+  const showTapjoyPlacement = useCallback(async name => {
+    return tapjoy.current.showPlacement(name);
+  }, []);
 
-    },
-    [],
-  )
-
-  return [
-    {initialiseTapjoy,
-    addTapjoyPlacement}
-  ]
-}
+  return [{}, { initialiseTapjoy, addTapjoyPlacement, showTapjoyPlacement, requestTapjoyPlacementContent }];
+};

@@ -21,15 +21,15 @@ public class MyTJPlacementListener implements TJPlacementListener {
     private final String placementName;
     private static final String TAG = "TapjoyPlacementListener";
 
-    public static final String PLACEMENT_REQUEST_SUCCESS = "onRequestSuccess";
-    public static final String PLACEMENT_REQUEST_FAILURE = "onRequestFailure";
-    public static final String PLACEMENT_CONTENT_READY = "onContentReady";
-    public static final String PLACEMENT_CONTENT_SHOW = "onContentShow";
-    public static final String PLACEMENT_CONTENT_DISMISS = "onContentDismiss";
-    public static final String PLACEMENT_PURCHASE_REQUEST = "onPurchaseRequest";
-    public static final String PLACEMENT_REWARD_REQUEST = "onRewardRequest";
+    private static final String PLACEMENT_REQUEST_SUCCESS = "onRequestSuccess";
+    private static final String PLACEMENT_REQUEST_FAILURE = "onRequestFailure";
+    private static final String PLACEMENT_CONTENT_READY = "onContentReady";
+    private static final String PLACEMENT_CONTENT_SHOW = "onContentShow";
+    private static final String PLACEMENT_CONTENT_DISMISS = "onContentDismiss";
+    private static final String PLACEMENT_PURCHASE_REQUEST = "onPurchaseRequest";
+    private static final String PLACEMENT_REWARD_REQUEST = "onRewardRequest";
 
-    public MyTJPlacementListener(ReactContext reactContext, String placementName) {
+    MyTJPlacementListener(ReactContext reactContext, String placementName) {
         this.reactContext = reactContext;
         this.placementName = placementName;
     }
@@ -69,6 +69,11 @@ public class MyTJPlacementListener implements TJPlacementListener {
     @Override
     public void onRewardRequest(TJPlacement tjPlacement, TJActionRequest tjActionRequest, String itemId, int quantity) {
         onRewardRequestEvent(PLACEMENT_REWARD_REQUEST, tjActionRequest.getRequestId(), tjActionRequest.getToken(), itemId, quantity);
+    }
+
+    @Override
+    public void onClick(TJPlacement tjPlacement) {
+
     }
 
     private void fireEvent(WritableMap resp) {

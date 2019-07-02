@@ -14,7 +14,7 @@ public class MyTJEarnedCurrencyListener implements TJEarnedCurrencyListener {
 
     private final ReactContext reactContext;
 
-    public MyTJEarnedCurrencyListener(ReactContext reactContext) {
+    MyTJEarnedCurrencyListener(ReactContext reactContext) {
         this.reactContext = reactContext;
     }
 

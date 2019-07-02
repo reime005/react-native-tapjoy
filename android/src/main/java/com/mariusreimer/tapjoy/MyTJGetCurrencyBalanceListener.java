@@ -15,7 +15,7 @@ public class MyTJGetCurrencyBalanceListener implements TJGetCurrencyBalanceListe
 
     private final Promise promise;
 
-    public MyTJGetCurrencyBalanceListener(Promise promise) {
+    MyTJGetCurrencyBalanceListener(Promise promise) {
         this.promise = promise;
     }
 
@@ -31,6 +31,6 @@ public class MyTJGetCurrencyBalanceListener implements TJGetCurrencyBalanceListe
 
     @Override
     public void onGetCurrencyBalanceResponseFailure(String s) {
-        TapjoyModule.promiseReject(promise, E_LAYOUT_ERROR, s);
+        TapjoyModule.promiseReject(promise, s);
     }
 }

@@ -33,8 +33,13 @@ public class TapjoyModule extends ReactContextBaseJavaModule {
     public static final String EARNED_CURRENCY_VALUE = "value";
     public static final String CURRENCY_BALANCE_NAME = "currencyBalance";
     public static final String CURRENCY_BALANCE_VALUE = "value";
+    public static final String TAPJOY_PLACEMENT_ADDED = "Tapjoy placement added.";
+    public static final String TAPJOY_IS_CONNECTED = "Tapjoy is connected.";
     public static final String TAPJOY_IS_NOT_CONNECTED = "Tapjoy is not connected.";
     public static final String NOT_ENOUGH_CURRENCY = "Not enough currency";
+    public static final String TAPJOY_PLACEMENT_NOT_CREATED = "Placement not created.";
+    public static final String TAPJOY_PLACEMENT_CONTENT_NOT_READY = "Placement content not ready.";
+    public static final String TAPJOY_SHOWING_PLACEMENT = "Showing Placement";
 
     private Map<String, TJPlacement> placementMap = new HashMap<>();
 
@@ -43,16 +48,16 @@ public class TapjoyModule extends ReactContextBaseJavaModule {
     }
 
     @ReactMethod
-    public void initialise(String sdkKey, boolean debug, Callback callback) {
-        MyTJConnectListener tjConnectListener = new MyTJConnectListener(callback);
-        Tapjoy.connect(getCurrentActivity(), sdkKey, new Hashtable(), tjConnectListener);
+    public void initialise(String sdkKey, boolean debug, final Promise promise) {
+        MyTJConnectListener tjConnectListener = new MyTJConnectListener(promise);
+        Tapjoy.connect(getReactApplicationContext(), sdkKey, new Hashtable(), tjConnectListener);
         Tapjoy.setDebugEnabled(debug);
     }
 
     @ReactMethod
     public void setUserId(final String userId, final Promise promise) {
         if (!Tapjoy.isConnected()) {
-            promiseReject(promise, E_LAYOUT_ERROR, TAPJOY_IS_NOT_CONNECTED);
+            promiseReject(promise, TAPJOY_IS_NOT_CONNECTED);
             return;
         }
 
@@ -64,7 +69,7 @@ public class TapjoyModule extends ReactContextBaseJavaModule {
 
             @Override
             public void onSetUserIDFailure(String s) {
-                promiseReject(promise, E_LAYOUT_ERROR, s);
+                promiseReject(promise, s);
             }
         });
     }
@@ -72,7 +77,7 @@ public class TapjoyModule extends ReactContextBaseJavaModule {
     @ReactMethod
     public void spendCurrencyAction(final int amount, final Promise promise) {
         if (!Tapjoy.isConnected()) {
-            promiseReject(promise, E_LAYOUT_ERROR, TAPJOY_IS_NOT_CONNECTED);
+            promiseReject(promise, TAPJOY_IS_NOT_CONNECTED);
             return;
         }
 
@@ -90,14 +95,14 @@ public class TapjoyModule extends ReactContextBaseJavaModule {
 
                             @Override
                             public void onSpendCurrencyResponseFailure(String s) {
-                                promiseReject(promise, E_LAYOUT_ERROR, s);
+                                promiseReject(promise, s);
                             }
                         });
                     } catch (IllegalViewOperationException e) {
-                        promiseReject(promise, E_LAYOUT_ERROR, e.getLocalizedMessage());
+                        promiseReject(promise, e.getLocalizedMessage());
                     }
                 } else {
-                    promiseReject(promise, E_LAYOUT_ERROR, NOT_ENOUGH_CURRENCY);
+                    promiseReject(promise, NOT_ENOUGH_CURRENCY);
                 }
             }
 
@@ -109,20 +114,20 @@ public class TapjoyModule extends ReactContextBaseJavaModule {
     }
 
     @ReactMethod
-    public void listenForEarnedCurrency(Callback callback) {
+    public void listenForEarnedCurrency(final Promise promise) {
         if (Tapjoy.isConnected()) {
             Tapjoy.setEarnedCurrencyListener(new MyTJEarnedCurrencyListener(getReactApplicationContext()));
         } else {
-            responseNotConnected(callback);
+            responseNotConnected(promise);
         }
     }
 
     @ReactMethod
-    public void isConnected(Callback callback) {
+    public void isConnected(final Promise promise) {
         if (Tapjoy.isConnected()) {
-            responseConnected(callback);
+            responseConnected(promise);
         } else {
-            responseNotConnected(callback);
+            responseNotConnected(promise);
         }
     }
 
@@ -137,28 +142,29 @@ public class TapjoyModule extends ReactContextBaseJavaModule {
                 }
             });
         } else {
-            promiseReject(promise, E_LAYOUT_ERROR, TAPJOY_IS_NOT_CONNECTED);
+            promiseReject(promise, TAPJOY_IS_NOT_CONNECTED);
         }
     }
 
-    private void responseNotConnected(Callback callback) {
+    private void responseNotConnected(final Promise promise) {
         WritableMap responseMap = Arguments.createMap();
         responseMap.putString(E_LAYOUT_ERROR, TAPJOY_IS_NOT_CONNECTED);
-        callback.invoke(responseMap);
+        promiseReject(promise, TAPJOY_IS_NOT_CONNECTED);
     }
 
-    private void responseConnected(Callback callback) {
+    private void responseConnected(final Promise promise) {
         WritableMap responseMap = Arguments.createMap();
         responseMap.putBoolean(E_LAYOUT_INFO, true);
-        callback.invoke(responseMap);
+        promiseResolve(promise, responseMap);
     }
 
     @ReactMethod
-    public void addPlacement(String placementName, Callback callback) {
+    public void addPlacement(String placementName, final Promise promise) {
         if (Tapjoy.isConnected()) {
             placementMap.put(placementName, new TJPlacement(getReactApplicationContext(), placementName, new MyTJPlacementListener(getReactApplicationContext(), placementName)));
+            promiseResolve(promise, TAPJOY_PLACEMENT_ADDED);
         } else {
-            responseNotConnected(callback);
+            responseNotConnected(promise);
         }
     }
 
@@ -167,16 +173,18 @@ public class TapjoyModule extends ReactContextBaseJavaModule {
         if (Tapjoy.isConnected()) {
             TJPlacement placement = placementMap.get(placementName);
             if (placement == null) {
+                promiseReject(promise, TAPJOY_PLACEMENT_NOT_CREATED);
                 return;
             }
 
             if (placement.isContentReady()) {
                 placement.showContent();
+                promiseResolve(promise, TAPJOY_SHOWING_PLACEMENT);
+            } else {
+                promiseReject(promise, TAPJOY_PLACEMENT_CONTENT_NOT_READY);
             }
-
-            promiseResolve(promise, null);
         } else {
-            promiseReject(promise, E_LAYOUT_ERROR, TAPJOY_IS_NOT_CONNECTED);
+            promiseReject(promise, TAPJOY_IS_NOT_CONNECTED);
         }
     }
 
@@ -185,26 +193,27 @@ public class TapjoyModule extends ReactContextBaseJavaModule {
         if (Tapjoy.isConnected()) {
             TJPlacement placement = placementMap.get(placementName);
             if (placement == null) {
+                promiseReject(promise, "Placement not created.");
                 return;
             }
 
             placement.requestContent();
 
-            promiseResolve(promise, null);
+            promiseResolve(promise, "Placement content requested.");
         } else {
-            promiseReject(promise, E_LAYOUT_ERROR, TAPJOY_IS_NOT_CONNECTED);
+            promiseReject(promise, TAPJOY_IS_NOT_CONNECTED);
         }
     }
 
-    public static void promiseReject(final Promise promise, String code, String message) {
+    static void promiseReject(final Promise promise, String message) {
         try {
-            promise.reject(code, message);
+            promise.reject(E_LAYOUT_ERROR, message);
         } catch (RuntimeException e) {
             e.printStackTrace();
         }
     }
 
-    public static void promiseResolve(final Promise promise, final Object value) {
+    static void promiseResolve(final Promise promise, final Object value) {
         try {
             promise.resolve(value);
         } catch (RuntimeException e) {
