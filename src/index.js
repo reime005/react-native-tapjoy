@@ -19,7 +19,7 @@ export class Tapjoy {
     }
 
     setUserId(userId: number) {
-        return this.tapjoy.setUserId(userId);
+        return TapjoyModule.setUserId(userId);
     }
 
     async initialise() {
@@ -33,11 +33,15 @@ export class Tapjoy {
     }
 
     spendCurrency(amount: number) {
-        return this.spendCurrencyAction(amount);
+        return TapjoyModule.spendCurrencyAction(amount);
     }
 
     requestContent(name: string) {
         return TapjoyModule.requestContent(name);
+    }
+
+    isConnected() {
+        return Tapjoy.isConnected();
     }
 
     addPlacement(name: string, callback: () => {}) {
@@ -57,7 +61,7 @@ export class Tapjoy {
     }
 
     getCurrencyBalance() {
-        return this.getCurrencyBalance();
+        return TapjoyModule.getCurrencyBalance();
     }
 
     listenForEarnedCurrency(callback: (earned: number) => {}) {
@@ -68,8 +72,7 @@ export class Tapjoy {
         }
 
         const sub = this._on('earnedCurrency', callback, TapjoyModuleEvt);
-        this.listenForEarnedCurrency(callback);
-        return promisify(() => sub, this.tapjoy)(sub);
+        return TapjoyModule.listenForEarnedCurrency(callback);
     }
 
     _addConstantExports(constants: string[]) {

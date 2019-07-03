@@ -38,10 +38,23 @@ public class TapjoyModule extends ReactContextBaseJavaModule {
     public static final String TAPJOY_IS_NOT_CONNECTED = "Tapjoy is not connected.";
     public static final String NOT_ENOUGH_CURRENCY = "Not enough currency";
     public static final String TAPJOY_PLACEMENT_NOT_CREATED = "Placement not created.";
+
+    public static final String TAPJOY_PLACEMENT_CONTENT_READY = "Placement content not ready.";
+
     public static final String TAPJOY_PLACEMENT_CONTENT_NOT_READY = "Placement content not ready.";
     public static final String TAPJOY_SHOWING_PLACEMENT = "Showing Placement";
 
-    private Map<String, TJPlacement> placementMap = new HashMap<>();
+    class Key {
+        public Key(Promise promise, TJPlacement placement) {
+            this.promise = promise;
+            this.placement = placement;
+        }
+
+        Promise promise;
+        TJPlacement placement;
+    }
+
+    private Map<String, Key> placementMap = new HashMap<>();
 
     public TapjoyModule(ReactApplicationContext reactContext) {
         super(reactContext);
@@ -161,7 +174,7 @@ public class TapjoyModule extends ReactContextBaseJavaModule {
     @ReactMethod
     public void addPlacement(String placementName, final Promise promise) {
         if (Tapjoy.isConnected()) {
-            placementMap.put(placementName, new TJPlacement(getReactApplicationContext(), placementName, new MyTJPlacementListener(getReactApplicationContext(), placementName)));
+            placementMap.put(placementName, new Key(null, new TJPlacement(getReactApplicationContext(), placementName, new MyTJPlacementListener(getReactApplicationContext(), placementName))));
             promiseResolve(promise, TAPJOY_PLACEMENT_ADDED);
         } else {
             responseNotConnected(promise);
@@ -171,7 +184,7 @@ public class TapjoyModule extends ReactContextBaseJavaModule {
     @ReactMethod
     public void showPlacement(String placementName, final Promise promise) {
         if (Tapjoy.isConnected()) {
-            TJPlacement placement = placementMap.get(placementName);
+            TJPlacement placement = placementMap.get(placementName).placement;
             if (placement == null) {
                 promiseReject(promise, TAPJOY_PLACEMENT_NOT_CREATED);
                 return;
@@ -191,15 +204,29 @@ public class TapjoyModule extends ReactContextBaseJavaModule {
     @ReactMethod
     public void requestContent(String placementName, final Promise promise) {
         if (Tapjoy.isConnected()) {
-            TJPlacement placement = placementMap.get(placementName);
-            if (placement == null) {
+            Key key = placementMap.get(placementName);
+            if (key == null) {
                 promiseReject(promise, "Placement not created.");
+                return;
+            } else if (key.placement.isContentReady()) {
+                promise.resolve(TAPJOY_PLACEMENT_CONTENT_READY);
                 return;
             }
 
-            placement.requestContent();
+            final MyTJPlacementListener listener = (MyTJPlacementListener)key.placement.getListener();
 
-            promiseResolve(promise, "Placement content requested.");
+            if (listener.getPromise() != null) {
+                promiseReject(promise, "Placement is already requesting content.");
+                return;
+            }
+
+
+
+//TODO isContentAvailable
+
+            key.placement.requestContent();
+
+            ((MyTJPlacementListener)key.placement.getListener()).setPromise(promise);
         } else {
             promiseReject(promise, TAPJOY_IS_NOT_CONNECTED);
         }

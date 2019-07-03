@@ -12,7 +12,7 @@ React Native lets you build mobile apps using only JavaScript. It uses the same 
 
 ## Install
 
-### Built for react native version >= 0.60.0
+### Built for react native version >= 0.59.0
 
     npm install react-native-tapjoy@latest --save
 

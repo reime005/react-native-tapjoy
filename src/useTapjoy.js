@@ -21,5 +21,25 @@ export const useTapjoy = options => {
     return tapjoy.current.showPlacement(name);
   }, []);
 
+  const spendTapjoyCurrency = useCallback((amount: number) => {
+    return tapjoy.current.spendCurrency(name);
+  }, []);
+
+  const setTapjoyUserId = useCallback((userID: number) => {
+    return tapjoy.current.setUserId(userID);
+  }, []);
+
+  const getTapjoyCurrencyBalance = useCallback(() => {
+    return tapjoy.current.getCurrencyBalance();
+  }, []);
+
+  const tapjoyListenForEarnedCurrency = useCallback((cb) => {
+    return tapjoy.current.listenForEarnedCurrency(cb);
+  }, []);
+
+  const isTapjoyConnected = useCallback(() => {
+    return tapjoy.current.isConnected();
+  }, []);
+
   return [{}, { initialiseTapjoy, addTapjoyPlacement, showTapjoyPlacement, requestTapjoyPlacementContent }];
 };

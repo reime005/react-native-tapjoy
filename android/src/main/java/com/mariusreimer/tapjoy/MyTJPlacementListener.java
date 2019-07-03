@@ -3,6 +3,7 @@ package com.mariusreimer.tapjoy;
 import android.util.Log;
 
 import com.facebook.react.bridge.Arguments;
+import com.facebook.react.bridge.Promise;
 import com.facebook.react.bridge.ReactContext;
 import com.facebook.react.bridge.WritableMap;
 import com.facebook.react.modules.core.DeviceEventManagerModule;
@@ -20,6 +21,8 @@ public class MyTJPlacementListener implements TJPlacementListener {
     private final ReactContext reactContext;
     private final String placementName;
     private static final String TAG = "TapjoyPlacementListener";
+
+    private Promise promise;
 
     private static final String PLACEMENT_REQUEST_SUCCESS = "onRequestSuccess";
     private static final String PLACEMENT_REQUEST_FAILURE = "onRequestFailure";
@@ -48,7 +51,18 @@ public class MyTJPlacementListener implements TJPlacementListener {
     @Override
     //This is called when the content is actually available to display.
     public void onContentReady(TJPlacement tjPlacement) {
-        event(PLACEMENT_CONTENT_READY);
+        if (promise != null) {
+            promise.resolve(PLACEMENT_CONTENT_READY);
+            promise = null;
+        }
+    }
+
+    public void setPromise(Promise promise) {
+        this.promise = promise;
+    }
+
+    public Promise getPromise() {
+        return promise;
     }
 
     @Override
