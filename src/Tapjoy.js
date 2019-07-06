@@ -4,11 +4,7 @@
  * @format
  */
 
-import {
-  NativeEventEmitter,
-  NativeModules,
-  Platform,
-} from 'react-native';
+import { NativeEventEmitter, NativeModules, Platform } from 'react-native';
 
 const { TapjoyModule } = NativeModules;
 const TapjoyModuleEvt = new NativeEventEmitter(TapjoyModule);

@@ -1,5 +1,5 @@
 import { useRef, useEffect, useCallback, useState } from 'react';
-import Tapjoy from './Tapjoy';
+import {Tapjoy} from './Tapjoy';
 
 export const useTapjoy = options => {
   const tapjoy = useRef(new Tapjoy(options));
