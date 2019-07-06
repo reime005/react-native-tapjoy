@@ -5,19 +5,13 @@
 version: 2
 jobs:
   build:
-    resource_class: large
+    resource_class: medium
     environment:
       - GRADLE_OPTS: '-Dorg.gradle.daemon=false -Dorg.gradle.jvmargs="-Xmx2048m -XX:+HeapDumpOnOutOfMemoryError"'
       - REACT_NATIVE_MAX_WORKERS: 2
       - ANDROID_BUILD_TOOLS_VERSION: '28.0.3'
     docker:
-      # specify the version you desire here
       - image: reactnativecommunity/react-native-android
-
-      # Specify service dependencies here if necessary
-      # CircleCI maintains a library of pre-built images
-      # documented at https://circleci.com/docs/2.0/circleci-images/
-      # - image: circleci/mongo:3.4.4
 
     working_directory: ~/react-native-tapjoy
 
@@ -39,7 +33,7 @@ jobs:
           key: v1-dependencies-{{ checksum "package.json" }}
 
       # android build
-      - run: ./android/gradlew build
+      - run: cd android && ./gradlew assembleRelease
 
       # run tests!
       - run: yarn test

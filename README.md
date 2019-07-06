@@ -1,6 +1,20 @@
-# React Native Tapjoy
+<p>&nbsp;</p>
+<p align="center">
+  <p align='center'>React Native Tapjoy</p>
+</p>
+<p>&nbsp;</p>
+
+<p>
 
 This module provides react-native bindings for the [Tapjoy SDK](https://home.tapjoy.com/developers/).
+
+</p>
+
+<p>&nbsp;</p>
+
+[![npm](https://img.shields.io/npm/v/react-native-tapjoy.svg?style=flat-square)](http://npm.im/react-native-tapjoy)
+![GitHub](https://img.shields.io/github/license/reime005/react-native-tapjoy.svg?style=flat-square)
+[![CircleCI](https://circleci.com/gh/reime005/react-native-tapjoy.svg?style=svg)](https://circleci.com/gh/reime005/react-native-tapjoy)
 
 ## About Tapjoy
 
