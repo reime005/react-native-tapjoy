@@ -33,5 +33,8 @@ jobs:
             - node_modules
           key: v1-dependencies-{{ checksum "package.json" }}
 
+      # android build
+      - run: ./android/gradlew build
+
       # run tests!
       - run: yarn test
