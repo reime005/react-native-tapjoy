@@ -12,65 +12,51 @@
 
 - (id)init {
   // Forward to the "designated" initialization method
-  return [self initWithPlacementName:@"default" tapjoyModule:nil];
+  return [self initWithTapjoyModule:nil];
 }
 
-- (id)initWithPlacementName:(NSString *)placementName tapjoyModule:(TapjoyModule*)tapjoyModule {
+- (id)initWithTapjoyModule:(TapjoyModule*)tapjoyModule {
   self = [super init];
   _tapjoyModule = tapjoyModule;
-  if (self) {
-    m_placementName = placementName;
-  }
   return self;
 }
 
 // Called when the SDK has made contact with Tapjoy's servers. It does not necessarily mean that any content is available.
 - (void)requestDidSucceed:(TJPlacement*)placement{
-  NSLog(@"requestDidSucceed");
-  NSDictionary *evt = @{
-                        @"onRequestSuccess": @"onRequestSuccess"
-                        };
-  [_tapjoyModule sendJSEvent:m_placementName props:evt];
+  if (_requestPromiseResolve != nil) {
+    _requestPromiseResolve(@"Placement request succeeded.");
+    _requestPromiseResolve = nil;
+  }
 }
 
 // Called when there was a problem during connecting Tapjoy servers.
 - (void)requestDidFail:(TJPlacement*)placement error:(NSError*)error{
-  NSLog(@"requestDidFail");
-  NSDictionary *evt = @{
-                        @"onRequestFailure": @"onRequestFailure"
-                        };
-  [_tapjoyModule sendJSEvent:m_placementName props:evt];
+  if (_requestPromiseReject != nil) {
+    _requestPromiseReject([NSString stringWithFormat:@"%ld", error.code], error.localizedDescription, error);
+    _requestPromiseReject = nil;
+  }
 }
 
 // Called when the content is actually available to display.
 - (void)contentIsReady:(TJPlacement*)placement{
-  NSLog(@"contentIsReady");
-  NSDictionary *evt = @{
-                        @"onContentReady": @"onContentReady"
-                        };
-  [_tapjoyModule sendJSEvent:m_placementName props:evt];
+  [_tapjoyModule sendJSEvent:TJ_EVENT_PLACEMENT_CONTENT_READY props:@{
+                                                                @"placementName": placement.placementName
+                                                                }];
 }
 
 // Called when the content is shown.
 - (void)contentDidAppear:(TJPlacement*)placement{
-  NSLog(@"contentDidAppear");
-  NSDictionary *evt = @{
-                        @"onContentShow": @"onContentShow"
-                        };
-  [_tapjoyModule sendJSEvent:m_placementName props:evt];
+  if (_showPromiseResolve != nil) {
+    _showPromiseResolve(@"Showing Placement.");
+    _showPromiseResolve = nil;
+  }
 }
 
 // Called when the content is dismissed.
 - (void)contentDidDisappear:(TJPlacement*)placement{
-  NSLog(@"contentDidDisappear");
-  NSDictionary *evt = @{
-                        @"onContentDismiss": @"onContentDismiss"
-                        };
-  [_tapjoyModule sendJSEvent:m_placementName props:evt];
-}
-
-- (NSArray<NSString *> *)supportedEvents {
-  return @[m_placementName];
+  [_tapjoyModule sendJSEvent:TJ_EVENT_PLACEMENT_DISMISS props:@{
+                                                                @"placementName": placement.placementName
+                                                                }];
 }
 
 @end

@@ -40,10 +40,6 @@
     "*.d.ts": [
       "yarn prettier",
       "git add"
-    ],
-    "*.md": [
-      "yarn prettier",
-      "git add"
     ]
   },
   "scripts": {
@@ -58,7 +54,7 @@
   },
   "resolutions": {
     "@types/react": "^16.8.6",
-    "react-native": "^0.60.0-rc.3"
+    "react-native": "^0.60.0"
   },
   "peerDependencies": {
     "prop-types": "^15.7.2"
@@ -113,7 +109,7 @@
     "prettier-eslint": "^8.8.2",
     "react": "^16.8.6",
     "react-dom": "^16.8.6",
-    "react-native": "^0.60.0-rc.3",
+    "react-native": "^0.60.0",
     "react-testing-library": "^6.1.2",
     "rimraf": "^2.6.3",
     "rollup": "^1.10.1",

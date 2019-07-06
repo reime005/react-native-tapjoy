@@ -22,15 +22,8 @@ public class MyTJPlacementListener implements TJPlacementListener {
     private final String placementName;
     private static final String TAG = "TapjoyPlacementListener";
 
-    private Promise promise;
-
-    private static final String PLACEMENT_REQUEST_SUCCESS = "onRequestSuccess";
-    private static final String PLACEMENT_REQUEST_FAILURE = "onRequestFailure";
-    private static final String PLACEMENT_CONTENT_READY = "onContentReady";
-    private static final String PLACEMENT_CONTENT_SHOW = "onContentShow";
-    private static final String PLACEMENT_CONTENT_DISMISS = "onContentDismiss";
-    private static final String PLACEMENT_PURCHASE_REQUEST = "onPurchaseRequest";
-    private static final String PLACEMENT_REWARD_REQUEST = "onRewardRequest";
+    private Promise requestPromise;
+    private Promise showPromise;
 
     MyTJPlacementListener(ReactContext reactContext, String placementName) {
         this.reactContext = reactContext;
@@ -40,94 +33,97 @@ public class MyTJPlacementListener implements TJPlacementListener {
     @Override
     // This just means the SDK has made contact with Tapjoy's servers. It does not necessarily mean that any content is available.
     public void onRequestSuccess(TJPlacement tjPlacement) {
-        event(PLACEMENT_REQUEST_SUCCESS);
+        if (requestPromise != null) {
+            requestPromise.resolve(TapjoyModule.TAPJOY_PLACEMENT_REQUEST_SUCCESS);
+            requestPromise = null;
+        }
     }
 
     @Override
     public void onRequestFailure(TJPlacement tjPlacement, TJError tjError) {
-        failureEvent(PLACEMENT_REQUEST_FAILURE, tjError.message);
+        if (requestPromise != null) {
+            requestPromise.reject(TapjoyModule.TAPJOY_PLACEMENT_REQUEST_FAILURE, tjError.message);
+            requestPromise = null;
+        }
     }
 
     @Override
     //This is called when the content is actually available to display.
     public void onContentReady(TJPlacement tjPlacement) {
-        if (promise != null) {
-            promise.resolve(PLACEMENT_CONTENT_READY);
-            promise = null;
-        }
+        event(TapjoyModule.Events.EVENT_PLACEMENT_CONTENT_READY.toString(), tjPlacement.getName());
     }
 
-    public void setPromise(Promise promise) {
-        this.promise = promise;
+    public Promise getRequestPromise() {
+        return requestPromise;
     }
 
-    public Promise getPromise() {
-        return promise;
+    public void setRequestPromise(Promise requestPromise) {
+        this.requestPromise = requestPromise;
+    }
+
+    public void setShowPromise(Promise showPromise) {
+        this.showPromise = showPromise;
     }
 
     @Override
     public void onContentShow(TJPlacement tjPlacement) {
-        event(PLACEMENT_CONTENT_SHOW);
+        if (showPromise != null) {
+            showPromise.resolve(TapjoyModule.TAPJOY_SHOWING_PLACEMENT);
+            showPromise = null;
+        }
     }
 
     @Override
     public void onContentDismiss(TJPlacement tjPlacement) {
-        event(PLACEMENT_CONTENT_DISMISS);
+        event(TapjoyModule.Events.EVENT_PLACEMENT_DISMISS.toString(), tjPlacement.getName());
     }
 
     @Override
     public void onPurchaseRequest(TJPlacement tjPlacement, TJActionRequest tjActionRequest, String productId) {
-        onPurchaseRequestEvent(PLACEMENT_PURCHASE_REQUEST, tjActionRequest.getRequestId(), tjActionRequest.getToken(), productId);
+        onPurchaseRequestEvent(TapjoyModule.Events.EVENT_PLACEMENT_PURCHASE_REQUEST.toString(), tjActionRequest.getRequestId(), tjActionRequest.getToken(), productId);
     }
 
     @Override
     public void onRewardRequest(TJPlacement tjPlacement, TJActionRequest tjActionRequest, String itemId, int quantity) {
-        onRewardRequestEvent(PLACEMENT_REWARD_REQUEST, tjActionRequest.getRequestId(), tjActionRequest.getToken(), itemId, quantity);
+        onRewardRequestEvent(TapjoyModule.Events.EVENT_PLACEMENT_REWARD_REQUEST.toString(), tjActionRequest.getRequestId(), tjActionRequest.getToken(), itemId, quantity);
     }
 
     @Override
     public void onClick(TJPlacement tjPlacement) {
-
+        event(TapjoyModule.Events.EVENT_PLACEMENT_CLICK.toString(), tjPlacement.getName());
     }
 
-    private void fireEvent(WritableMap resp) {
+    private void fireEvent(String eventName, WritableMap resp) {
         if (reactContext.hasActiveCatalystInstance()) {
             reactContext.getJSModule(DeviceEventManagerModule.RCTDeviceEventEmitter.class)
-                    .emit(placementName, resp);
+                    .emit(eventName, resp);
         } else {
             Log.d(TAG, "Waiting for CatalystInstance before sending event.");
         }
     }
 
-    private void event(String eventName) {
+    private void event(String eventName, String placementName) {
         final WritableMap responseMap = Arguments.createMap();
-        responseMap.putString(eventName, eventName);
-        fireEvent(responseMap);
-    }
-
-    private void failureEvent(String eventName, String errorMessage) {
-        final WritableMap responseMap = Arguments.createMap();
-        responseMap.putString(eventName, eventName);
-        responseMap.putString("errorMessage", errorMessage);
-        fireEvent(responseMap);
+        if (placementName != null) {
+            responseMap.putString("placementName", placementName);
+        }
+        fireEvent(eventName, responseMap);
     }
 
     private void onPurchaseRequestEvent(String eventName, String requestId, String token, String productId) {
         final WritableMap responseMap = Arguments.createMap();
-        responseMap.putString(eventName, eventName);
         responseMap.putString("requestId", requestId);
         responseMap.putString("token", token);
         responseMap.putString("productId", productId);
-        fireEvent(responseMap);
+        fireEvent(eventName, responseMap);
     }
 
     private void onRewardRequestEvent(String eventName, String requestId, String token, String itemId, int quantity) {
         final WritableMap responseMap = Arguments.createMap();
-        responseMap.putString(eventName, eventName);
         responseMap.putString("requestId", requestId);
         responseMap.putString("token", token);
         responseMap.putString("itemId", itemId);
         responseMap.putInt("quantity", quantity);
-        fireEvent(responseMap);
+        fireEvent(eventName, responseMap);
     }
 }

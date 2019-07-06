@@ -1,4 +1,4 @@
-## React Native Tapjoy
+# React Native Tapjoy
 
 This module provides react-native bindings for the [Tapjoy SDK](https://home.tapjoy.com/developers/).
 
@@ -12,11 +12,11 @@ React Native lets you build mobile apps using only JavaScript. It uses the same 
 
 ## Install
 
-### Built for react native version >= 0.59.0
+### Tested with react native version 0.60.0
 
     npm install react-native-tapjoy@latest --save
 
-### Automatic Installation
+### Automatic Installation (react native version < 0.60.0)
 
     react-native link
 

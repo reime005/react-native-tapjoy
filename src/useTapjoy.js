@@ -1,20 +1,30 @@
-import { useRef, useEffect, useCallback } from 'react';
-
-import { Tapjoy } from '.';
+import { useRef, useEffect, useCallback, useState } from 'react';
+import Tapjoy from './Tapjoy';
 
 export const useTapjoy = options => {
   const tapjoy = useRef(new Tapjoy(options));
+  const [tapjoyEvents, setTapjoyEvents] = useState([]);
+
+  useEffect(() => {
+    const { events } = tapjoy.current.constants;
+
+    setTapjoyEvents(events);
+  }, []);
+
+  const listenToEvent = useCallback((name, cb) => {
+    return tapjoy.current._on(name, cb);
+  }, []);
 
   const initialiseTapjoy = useCallback(() => {
     return tapjoy.current.initialise();
   }, []);
 
   const addTapjoyPlacement = useCallback(async name => {
-   return tapjoy.current.addPlacement(name);
+    return tapjoy.current.addPlacement(name);
   }, []);
 
   const requestTapjoyPlacementContent = useCallback(async name => {
-   return tapjoy.current.requestContent(name);
+    return tapjoy.current.requestContent(name);
   }, []);
 
   const showTapjoyPlacement = useCallback(async name => {
@@ -22,7 +32,7 @@ export const useTapjoy = options => {
   }, []);
 
   const spendTapjoyCurrency = useCallback((amount: number) => {
-    return tapjoy.current.spendCurrency(name);
+    return tapjoy.current.spendCurrency(amount);
   }, []);
 
   const setTapjoyUserId = useCallback((userID: number) => {
@@ -33,7 +43,7 @@ export const useTapjoy = options => {
     return tapjoy.current.getCurrencyBalance();
   }, []);
 
-  const tapjoyListenForEarnedCurrency = useCallback((cb) => {
+  const tapjoyListenForEarnedCurrency = useCallback(cb => {
     return tapjoy.current.listenForEarnedCurrency(cb);
   }, []);
 
@@ -41,5 +51,21 @@ export const useTapjoy = options => {
     return tapjoy.current.isConnected();
   }, []);
 
-  return [{}, { initialiseTapjoy, addTapjoyPlacement, showTapjoyPlacement, requestTapjoyPlacementContent }];
+  return [
+    {
+      tapjoyEvents,
+    },
+    {
+      initialiseTapjoy,
+      listenToEvent,
+      addTapjoyPlacement,
+      showTapjoyPlacement,
+      requestTapjoyPlacementContent,
+      spendTapjoyCurrency,
+      setTapjoyUserId,
+      getTapjoyCurrencyBalance,
+      tapjoyListenForEarnedCurrency,
+      isTapjoyConnected,
+    },
+  ];
 };

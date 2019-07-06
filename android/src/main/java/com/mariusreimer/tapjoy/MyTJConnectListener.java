@@ -13,7 +13,6 @@ import com.tapjoy.TJConnectListener;
 public class MyTJConnectListener implements TJConnectListener {
 
     private Promise promise;
-    private WritableMap responseMap = Arguments.createMap();
 
     MyTJConnectListener(Promise promise) {
         this.promise = promise;

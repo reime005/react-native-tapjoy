@@ -1,22 +1,30 @@
 package com.mariusreimer.tapjoy;
 
+import android.util.Log;
+
 import com.facebook.react.bridge.Arguments;
-import com.facebook.react.bridge.Callback;
 import com.facebook.react.bridge.Promise;
 import com.facebook.react.bridge.ReactApplicationContext;
 import com.facebook.react.bridge.ReactContextBaseJavaModule;
 import com.facebook.react.bridge.ReactMethod;
 import com.facebook.react.bridge.WritableMap;
+import com.facebook.react.common.MapBuilder;
 import com.facebook.react.uimanager.IllegalViewOperationException;
+import com.tapjoy.TJEarnedCurrencyListener;
 import com.tapjoy.TJGetCurrencyBalanceListener;
 import com.tapjoy.TJPlacement;
 import com.tapjoy.TJSetUserIDListener;
 import com.tapjoy.TJSpendCurrencyListener;
 import com.tapjoy.Tapjoy;
 
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Hashtable;
+import java.util.List;
 import java.util.Map;
+
+import javax.annotation.Nullable;
 
 import static com.facebook.react.bridge.UiThreadUtil.runOnUiThread;
 
@@ -26,35 +34,64 @@ import static com.facebook.react.bridge.UiThreadUtil.runOnUiThread;
 
 public class TapjoyModule extends ReactContextBaseJavaModule {
 
-    public static final String EVENT_EARNED_CURRENCY = "earnedCurrency";
     public static final String E_LAYOUT_INFO = "info";
     public static final String E_LAYOUT_ERROR = "error";
-    public static final String EARNED_CURRENCY_NAME = "currency";
-    public static final String EARNED_CURRENCY_VALUE = "value";
-    public static final String CURRENCY_BALANCE_NAME = "currencyBalance";
-    public static final String CURRENCY_BALANCE_VALUE = "value";
+
+    public static final String EARNED_CURRENCY_NAME = "currencyName";
+    public static final String EARNED_CURRENCY_VALUE = "amount";
+    public static final String CURRENCY_BALANCE_NAME = "currencyName";
+    public static final String CURRENCY_BALANCE_VALUE = "amount";
     public static final String TAPJOY_PLACEMENT_ADDED = "Tapjoy placement added.";
     public static final String TAPJOY_IS_CONNECTED = "Tapjoy is connected.";
     public static final String TAPJOY_IS_NOT_CONNECTED = "Tapjoy is not connected.";
     public static final String NOT_ENOUGH_CURRENCY = "Not enough currency";
     public static final String TAPJOY_PLACEMENT_NOT_CREATED = "Placement not created.";
 
-    public static final String TAPJOY_PLACEMENT_CONTENT_READY = "Placement content not ready.";
+    public static final String TAPJOY_PLACEMENT_REQUEST_SUCCESS = "Placement request succeeded.";
+    public static final String TAPJOY_PLACEMENT_REQUEST_FAILURE = "Placement request failure.";
 
+    public static final String TAPJOY_PLACEMENT_CONTENT_READY = "Placement content is ready.";
     public static final String TAPJOY_PLACEMENT_CONTENT_NOT_READY = "Placement content not ready.";
-    public static final String TAPJOY_SHOWING_PLACEMENT = "Showing Placement";
 
-    class Key {
-        public Key(Promise promise, TJPlacement placement) {
-            this.promise = promise;
-            this.placement = placement;
+    public static final String TAPJOY_SHOWING_PLACEMENT = "Showing Placement.";
+    public static final String TAPJOY_PLACEMENT_CONTENT_AVAILABLE = "Placement content available.";
+
+    public enum Events {
+        EVENT_PLACEMENT_EARNED_CURRENCY("earnedCurrency"),
+        EVENT_PLACEMENT_DISMISS("onPlacementDismiss"),
+        EVENT_PLACEMENT_CONTENT_READY("onPlacementContentReady"),
+        EVENT_PLACEMENT_CLICK("onPlacementClick"),
+        EVENT_PLACEMENT_PURCHASE_REQUEST("onPurchaseRequest"),
+        EVENT_PLACEMENT_REWARD_REQUEST("onRewardRequest");
+
+
+        private final String mName;
+
+        Events(final String name) {
+            mName = name;
         }
 
-        Promise promise;
-        TJPlacement placement;
+        @Override
+        public String toString() {
+            return mName;
+        }
     }
 
-    private Map<String, Key> placementMap = new HashMap<>();
+    private Map<String, TJPlacement> placementMap = new HashMap<>();
+
+    @Nullable
+    @Override
+    public Map<String, Object> getConstants() {
+        MapBuilder.Builder<String, Object> builder = MapBuilder.builder();
+        List<String> events = new ArrayList<>();
+
+        for (Object event : Events.values()) {
+            events.add(event.toString());
+        }
+
+        builder.put("events", events);
+        return builder.build();
+    }
 
     public TapjoyModule(ReactApplicationContext reactContext) {
         super(reactContext);
@@ -95,7 +132,6 @@ public class TapjoyModule extends ReactContextBaseJavaModule {
         }
 
         Tapjoy.getCurrencyBalance(new TJGetCurrencyBalanceListener() {
-
             @Override
             public void onGetCurrencyBalanceResponse(String s, int i) {
                 if (i - amount >= 0) {
@@ -130,6 +166,7 @@ public class TapjoyModule extends ReactContextBaseJavaModule {
     public void listenForEarnedCurrency(final Promise promise) {
         if (Tapjoy.isConnected()) {
             Tapjoy.setEarnedCurrencyListener(new MyTJEarnedCurrencyListener(getReactApplicationContext()));
+            promiseResolve(promise, "Listening for earned currency.");
         } else {
             responseNotConnected(promise);
         }
@@ -174,7 +211,7 @@ public class TapjoyModule extends ReactContextBaseJavaModule {
     @ReactMethod
     public void addPlacement(String placementName, final Promise promise) {
         if (Tapjoy.isConnected()) {
-            placementMap.put(placementName, new Key(null, new TJPlacement(getReactApplicationContext(), placementName, new MyTJPlacementListener(getReactApplicationContext(), placementName))));
+            placementMap.put(placementName, new TJPlacement(getReactApplicationContext(), placementName, new MyTJPlacementListener(getReactApplicationContext(), placementName)));
             promiseResolve(promise, TAPJOY_PLACEMENT_ADDED);
         } else {
             responseNotConnected(promise);
@@ -184,15 +221,17 @@ public class TapjoyModule extends ReactContextBaseJavaModule {
     @ReactMethod
     public void showPlacement(String placementName, final Promise promise) {
         if (Tapjoy.isConnected()) {
-            TJPlacement placement = placementMap.get(placementName).placement;
+            TJPlacement placement = placementMap.get(placementName);
+
             if (placement == null) {
                 promiseReject(promise, TAPJOY_PLACEMENT_NOT_CREATED);
                 return;
             }
 
             if (placement.isContentReady()) {
+                ((MyTJPlacementListener)placement.getListener()).setShowPromise(promise);
+
                 placement.showContent();
-                promiseResolve(promise, TAPJOY_SHOWING_PLACEMENT);
             } else {
                 promiseReject(promise, TAPJOY_PLACEMENT_CONTENT_NOT_READY);
             }
@@ -204,29 +243,31 @@ public class TapjoyModule extends ReactContextBaseJavaModule {
     @ReactMethod
     public void requestContent(String placementName, final Promise promise) {
         if (Tapjoy.isConnected()) {
-            Key key = placementMap.get(placementName);
-            if (key == null) {
-                promiseReject(promise, "Placement not created.");
+           TJPlacement placement = placementMap.get(placementName);
+
+            if (placement == null) {
+                promiseReject(promise, TAPJOY_PLACEMENT_NOT_CREATED);
                 return;
-            } else if (key.placement.isContentReady()) {
+            } else if (placement.isContentReady()) {
                 promise.resolve(TAPJOY_PLACEMENT_CONTENT_READY);
                 return;
             }
 
-            final MyTJPlacementListener listener = (MyTJPlacementListener)key.placement.getListener();
+            if (placement.isContentAvailable()) {
+                promiseReject(promise, TAPJOY_PLACEMENT_CONTENT_AVAILABLE);
+                return;
+            }
 
-            if (listener.getPromise() != null) {
+            final MyTJPlacementListener listener = (MyTJPlacementListener)placement.getListener();
+
+            if (listener.getRequestPromise() != null) {
                 promiseReject(promise, "Placement is already requesting content.");
                 return;
             }
 
+            listener.setRequestPromise(promise);
 
-
-//TODO isContentAvailable
-
-            key.placement.requestContent();
-
-            ((MyTJPlacementListener)key.placement.getListener()).setPromise(promise);
+            placement.requestContent();
         } else {
             promiseReject(promise, TAPJOY_IS_NOT_CONNECTED);
         }
