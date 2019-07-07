@@ -7,12 +7,6 @@
   "author": "Marius Reimer (reime005) <reime005@gmail.com> (https://mariusreimer.com)",
   "types": "./src/index.d.ts",
   "sideEffects": false,
-  "files": [
-    "ios",
-    "android",
-    "src",
-    "index.d.ts"
-  ],
   "repository": {
     "type": "git",
     "url": "https://github.com/reime005/react-native-tapjoy.git"

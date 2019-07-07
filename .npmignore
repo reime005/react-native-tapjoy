@@ -3,10 +3,9 @@ Example/
 android/build/
 /.github
 /examples
-circle.yml
+.circleci/
 commitlint.config.js
 .DS_Store
 *xcuserdata*
 *.iml
 .idea/
-
