@@ -4,7 +4,6 @@
   "version": "2.0.1-0",
   "license": "MIT",
   "main": "src/index.js",
-  "module": "dist/react-native-tapjoy.js",
   "author": "Marius Reimer (reime005) <reime005@gmail.com> (https://mariusreimer.com)",
   "types": "./src/index.d.ts",
   "sideEffects": false,
