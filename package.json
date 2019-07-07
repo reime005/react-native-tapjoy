@@ -9,6 +9,8 @@
   "sideEffects": false,
   "files": [
     "dist",
+    "ios",
+    "android",
     "src",
     "index.d.ts"
   ],
