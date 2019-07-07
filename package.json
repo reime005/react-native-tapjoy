@@ -1,18 +1,12 @@
 {
   "name": "react-native-tapjoy",
   "description": "A React Native module that allows you to use the native Tapjoy advertiser SDK.",
-  "version": "1.1.6",
+  "version": "2.0.7-0",
   "license": "MIT",
   "main": "src/index.js",
-  "module": "dist/react-native-tapjoy.js",
   "author": "Marius Reimer (reime005) <reime005@gmail.com> (https://mariusreimer.com)",
   "types": "./src/index.d.ts",
   "sideEffects": false,
-  "files": [
-    "dist",
-    "src",
-    "index.d.ts"
-  ],
   "repository": {
     "type": "git",
     "url": "https://github.com/reime005/react-native-tapjoy.git"
@@ -43,11 +37,8 @@
     ]
   },
   "scripts": {
-    "build": "rollup -c",
-    "clean": "rimraf ./dist && rimraf ./coverage",
-    "lint": "eslint src example --fix && tslint 'src/**/*.{ts,tsx}' --fix",
+    "clean": "rimraf ./android/build/ && rimraf ./ios/build/",
     "precommit": "lint-staged && npm run test",
-    "prepublish": "npm run build",
     "test": "jest --passWithNoTests",
     "test:coverage": "npm run test -- --coverage",
     "test:coverage:deploy": "npm run test:coverage && codecov"
@@ -112,13 +103,6 @@
     "react-native": "^0.60.0",
     "react-testing-library": "^6.1.2",
     "rimraf": "^2.6.3",
-    "rollup": "^1.10.1",
-    "rollup-plugin-babel": "^4.3.2",
-    "rollup-plugin-commonjs": "^9.3.4",
-    "rollup-plugin-filesize": "^6.0.1",
-    "rollup-plugin-replace": "^2.2.0",
-    "rollup-plugin-typescript": "^1.0.1",
-    "rollup-plugin-uglify": "^6.0.2",
     "ts-jest": "^24.0.2",
     "ts-node": "^8.1.0",
     "tslib": "^1.9.3",
