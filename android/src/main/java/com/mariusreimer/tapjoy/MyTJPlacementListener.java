@@ -80,12 +80,12 @@ public class MyTJPlacementListener implements TJPlacementListener {
 
     @Override
     public void onPurchaseRequest(TJPlacement tjPlacement, TJActionRequest tjActionRequest, String productId) {
-        onPurchaseRequestEvent(TapjoyModule.Events.EVENT_PLACEMENT_PURCHASE_REQUEST.toString(), tjActionRequest.getRequestId(), tjActionRequest.getToken(), productId);
+        onPurchaseRequestEvent(TapjoyModule.Events.EVENT_PLACEMENT_PURCHASE_REQUEST.toString(), tjActionRequest.getRequestId(), tjActionRequest.getToken(), productId, tjPlacement.getName());
     }
 
     @Override
     public void onRewardRequest(TJPlacement tjPlacement, TJActionRequest tjActionRequest, String itemId, int quantity) {
-        onRewardRequestEvent(TapjoyModule.Events.EVENT_PLACEMENT_REWARD_REQUEST.toString(), tjActionRequest.getRequestId(), tjActionRequest.getToken(), itemId, quantity);
+        onRewardRequestEvent(TapjoyModule.Events.EVENT_PLACEMENT_REWARD_REQUEST.toString(), tjActionRequest.getRequestId(), tjActionRequest.getToken(), itemId, quantity, tjPlacement.getName());
     }
 
     @Override
@@ -110,16 +110,18 @@ public class MyTJPlacementListener implements TJPlacementListener {
         fireEvent(eventName, responseMap);
     }
 
-    private void onPurchaseRequestEvent(String eventName, String requestId, String token, String productId) {
+    private void onPurchaseRequestEvent(String eventName, String requestId, String token, String productId, String placementName) {
         final WritableMap responseMap = Arguments.createMap();
+        responseMap.putString("placementName", placementName);
         responseMap.putString("requestId", requestId);
         responseMap.putString("token", token);
         responseMap.putString("productId", productId);
         fireEvent(eventName, responseMap);
     }
 
-    private void onRewardRequestEvent(String eventName, String requestId, String token, String itemId, int quantity) {
+    private void onRewardRequestEvent(String eventName, String requestId, String token, String itemId, int quantity, String placementName) {
         final WritableMap responseMap = Arguments.createMap();
+        responseMap.putString("placementName", placementName);
         responseMap.putString("requestId", requestId);
         responseMap.putString("token", token);
         responseMap.putString("itemId", itemId);
