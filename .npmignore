@@ -9,6 +9,8 @@ commitlint.config.js
 dist/
 *xcuserdata*
 android/.gradle
+android/.project
+android/.idea
 *.settings*
 *.iml
 .idea/
