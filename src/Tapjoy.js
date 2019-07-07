@@ -11,76 +11,81 @@ const TapjoyModuleEvt = new NativeEventEmitter(TapjoyModule);
 
 export class Tapjoy {
   constructor(options) {
-    this.eventHandlers = {};
-    this.options = options;
+    this._eventHandlers = {};
+    this._options = options;
 
-    this.constants = TapjoyModule.getConstants();
+    this._tapjoy = TapjoyModule;
+    this._constants = TapjoyModule.getConstants();
   }
 
-  static setUserId(userId: number) {
-    return TapjoyModule.setUserId(userId);
+  get constants() {
+    return this._constants;
   }
 
-  async initialise() {
-    if (Platform.OS === 'android' && this.options.gcmSenderIdAndroid != null) {
-      TapjoyModule.registerForPushNotifications(
-        this.options.gcmSenderIdAndroid,
+  setUserId(userId: number) {
+    return this._tapjoy.setUserId(userId);
+  }
+
+  initialise() {
+    if (Platform.OS === 'android' && this._options.gcmSenderIdAndroid != null) {
+      this._tapjoy.registerForPushNotifications(
+        this._options.gcmSenderIdAndroid,
       );
     }
 
     const sdkKey =
       Platform.OS === 'ios'
-        ? this.options.sdkKeyIos
-        : this.options.sdkKeyAndroid;
+        ? this._options.sdkKeyIos
+        : this._options.sdkKeyAndroid;
 
-    return TapjoyModule.initialise(sdkKey, this.options.debug);
+    return this._tapjoy.initialise(sdkKey, this._options.debug);
   }
 
-  static spendCurrency(amount: number) {
-    return TapjoyModule.spendCurrencyAction(amount);
+  spendCurrency(amount: number) {
+    return this._tapjoy.spendCurrencyAction(amount);
   }
 
-  static requestContent(name: string) {
-    return TapjoyModule.requestContent(name);
+  requestContent(name: string) {
+    return this._tapjoy.requestContent(name);
   }
 
-  static isConnected() {
-    return Tapjoy.isConnected();
+  isConnected() {
+    return this._tapjoy.isConnected();
   }
 
-  static addPlacement(name: string) {
-    return TapjoyModule.addPlacement(name);
+  addPlacement(name: string) {
+    return this._tapjoy.addPlacement(name);
   }
 
-  static showPlacement(name: string) {
-    return TapjoyModule.showPlacement(name);
+  showPlacement(name: string) {
+    return this._tapjoy.showPlacement(name);
   }
 
-  static getCurrencyBalance() {
-    return TapjoyModule.getCurrencyBalance();
+  getCurrencyBalance() {
+    return this._tapjoy.getCurrencyBalance();
   }
 
   listenForEarnedCurrency(callback) {
-    this.eventHandlers.earnedCurrency = TapjoyModuleEvt.addListener(
+    this._eventHandlers.earnedCurrency = TapjoyModuleEvt.addListener(
       'earnedCurrency',
       callback,
     );
 
-    return TapjoyModule.listenForEarnedCurrency();
+    return this._tapjoy.listenForEarnedCurrency();
   }
 
   // Event handler
   // proxy to the tapjoy instance
   _on(name: string, cb: () => {}) {
-    const oldSub = this.eventHandlers[name];
+    const oldSub = this._eventHandlers[name];
 
     if (oldSub) {
       oldSub.remove();
-      this.eventHandlers[name] = null;
+      this._eventHandlers[name] = null;
     }
 
-    this.eventHandlers[name] = TapjoyModuleEvt.addListener(name, cb);
+    this._eventHandlers[name] = TapjoyModuleEvt.addListener(name, cb);
 
-    return this.eventHandlers[name];
+    return this._eventHandlers[name];
   }
 }
