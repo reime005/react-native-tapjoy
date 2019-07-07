@@ -8,7 +8,6 @@
   "types": "./src/index.d.ts",
   "sideEffects": false,
   "files": [
-    "dist",
     "ios",
     "android",
     "src",

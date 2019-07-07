@@ -1,7 +1,12 @@
 node_modules/
 Example/
-build/
+android/build/
 /.github
 /examples
 circle.yml
 commitlint.config.js
+.DS_Store
+*xcuserdata*
+*.iml
+.idea/
+
