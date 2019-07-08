@@ -1,3 +1,5 @@
+/* @flow */
+
 import { useRef, useEffect, useCallback, useState } from 'react';
 import {Tapjoy} from './Tapjoy';
 
@@ -7,7 +9,6 @@ export const useTapjoy = options => {
 
   useEffect(() => {
     const { events } = tapjoy.current.constants;
-
     setTapjoyEvents(events);
   }, []);
 
@@ -32,7 +33,7 @@ export const useTapjoy = options => {
   }, []);
 
   const spendTapjoyCurrency = useCallback((amount: number) => {
-    return tapjoy.current.spendCurrency(amount);
+    return tapjoy.current.spendCurrencyAction(amount);
   }, []);
 
   const setTapjoyUserId = useCallback((userID: number) => {
@@ -61,11 +62,11 @@ export const useTapjoy = options => {
       addTapjoyPlacement,
       showTapjoyPlacement,
       requestTapjoyPlacementContent,
-      spendTapjoyCurrency,
       setTapjoyUserId,
       getTapjoyCurrencyBalance,
       tapjoyListenForEarnedCurrency,
       isTapjoyConnected,
+      spendTapjoyCurrency
     },
   ];
 };
