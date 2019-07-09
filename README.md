@@ -34,7 +34,12 @@ React Native lets you build mobile apps using only JavaScript. It uses the same 
 
     react-native link
 
-### Manual Installation (react native version < 0.60.0)
+<details>
+<summary>
+<b>
+Manual Installation (react native version < 0.60.0)
+</b>
+</summary>
 
 #### iOS
 
@@ -102,7 +107,20 @@ NOTE: You have to manually integrate the Push notifications feature as described
 
 6. Add the Tapjoy SDK to your Android project as described on the Tapjoy website.
 
+<details>
+<summary>
+<b>
+Windows
+</b>
+</summary>
+
+![](https://media.giphy.com/media/44Eq3Ab5LPYn6/giphy.gif)
+
+</details>
+
 ## Usage
+
+TypeScript definitions are included.
 
 ### Configuration
 
@@ -282,6 +300,24 @@ You may get a list of events from `useTapjoy` hook, named `tapjoyEvents`.
         try {
             const { amount, currencyName } = await getTapjoyCurrencyBalance();
         } catch (e) {
+            // error
+        }
+    }, []);
+
+### Spend Currency (without React Hooks)
+
+    try {
+        await tapjoy.spendCurrencyAction(42);
+    } catch (e) {
         // error
+    }
+
+### Spend Currency (with React Hooks)
+
+    useEffect(() => {
+        try {
+            await spendTapjoyCurrency(42);
+        } catch (e) {
+            // error
         }
     }, []);
