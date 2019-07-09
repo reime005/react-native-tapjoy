@@ -1,6 +1,6 @@
 <p>&nbsp;</p>
 <p align="center">
-  <p align='center'>React Native Tapjoy</p>
+  <h1 align='center'>React Native Tapjoy<p>&nbsp;</p></h1>
 </p>
 <p>&nbsp;</p>
 
@@ -116,6 +116,7 @@ Windows
 
 ![](https://media.giphy.com/media/44Eq3Ab5LPYn6/giphy.gif)
 
+</details>
 </details>
 
 ## Usage
