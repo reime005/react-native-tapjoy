@@ -19,7 +19,8 @@
 #import "AppDelegate.h"
 
 @interface TapjoyModule : RCTEventEmitter <RCTBridgeModule> {
-  RCTResponseSenderBlock m_callback;
+  RCTPromiseResolveBlock mResolve;
+  RCTPromiseRejectBlock mReject;
   
   NSMutableDictionary *placementMap;
   NSMutableDictionary *placementListenerMap;
@@ -32,7 +33,10 @@
 
 @end
 
-static NSString *const TJ_EARNED_CURRENCY_EVENT = @"earnedCurrency";
-static NSString *const TJ_PLACEMENT_OFFERWALL_EVENT = @"Offerwall";
+static NSString *const TJ_EVENT_EARNED_CURRENCY = @"earnedCurrency";
+static NSString *const TJ_EVENT_PLACEMENT_DISMISS = @"onPlacementDismiss";
+static NSString *const TJ_EVENT_PLACEMENT_CONTENT_READY = @"onPlacementContentReady";
+static NSString *const TJ_EVENT_PLACEMENT_PURCHASE_REQUEST = @"onPurchaseRequest";
+static NSString *const TJ_EVENT_PLACEMENT_REWARD_REQUEST = @"onRewardRequest";
 
 #endif /* TapjoyModule_h */

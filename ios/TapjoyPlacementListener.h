@@ -17,16 +17,15 @@
 
 @class TapjoyModule;
 
-@interface TapjoyPlacementListener : RCTEventEmitter <TJPlacementDelegate, RCTBridgeModule> {
-  Boolean listening;
-  NSString *m_placementName;
-}
+@interface TapjoyPlacementListener : NSObject <TJPlacementDelegate, RCTBridgeModule> { }
 
 @property (strong) TapjoyModule *tapjoyModule;
+@property (strong) RCTPromiseRejectBlock requestPromiseReject;
+@property (strong) RCTPromiseResolveBlock requestPromiseResolve;
+@property (strong) RCTPromiseRejectBlock showPromiseReject;
+@property (strong) RCTPromiseResolveBlock showPromiseResolve;
 
-- (id)initWithPlacementName:(NSString *)placementName tapjoyModule:(TapjoyModule*)tapjoyModule;
-
-// Tapjoy Events
+- (id)initWithTapjoyModule:(TapjoyModule*)tapjoyModule;
 
 @end
 

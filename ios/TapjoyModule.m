@@ -12,24 +12,26 @@
 
 RCT_EXPORT_MODULE();
 
-RCT_EXPORT_METHOD(initialise:(NSString *)name debug:(BOOL)debug callback:(RCTResponseSenderBlock)callback) {
-  m_callback = callback;
+RCT_EXPORT_METHOD(initialise:(NSString *)name debug:(BOOL)debug resolve:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
+  mResolve = resolve;
+  mReject = reject;
+
   placementMap = [[NSMutableDictionary alloc]init];
   placementListenerMap = [[NSMutableDictionary alloc]init];
-  
+
   [[NSNotificationCenter defaultCenter] addObserver:self
                                            selector:@selector(tjcConnectSuccess: )
                                                name:TJC_CONNECT_SUCCESS
                                              object:nil];
-  
+
   [[NSNotificationCenter defaultCenter] addObserver:self
                                            selector:@selector(tjcConnectFail:)
                                                name:TJC_CONNECT_FAILED
                                              object:nil];
-  
+
   //Turn on Tapjoy debug mode
   [Tapjoy setDebugEnabled:debug]; //Do not set this for any version of the app released to an app store
-  
+
   //Tapjoy connect call
   [Tapjoy connect:name];
 }
@@ -37,7 +39,6 @@ RCT_EXPORT_METHOD(initialise:(NSString *)name debug:(BOOL)debug callback:(RCTRes
 RCT_EXPORT_METHOD(setUserId:(nonnull NSString *)userId resolve:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
   [Tapjoy setUserIDWithCompletion:userId completion:^(BOOL success, NSError *error) {
     if (error != nil) {
-      NSLog(@"Tapjoy setUserIDWithCompletion error");
       [TapjoyModule rejectPromise:reject withError:error];
     } else {
       resolve(nil);
@@ -45,93 +46,89 @@ RCT_EXPORT_METHOD(setUserId:(nonnull NSString *)userId resolve:(RCTPromiseResolv
   }];
 }
 
-RCT_EXPORT_METHOD(addPlacement:(NSString *)placementName callback:(RCTResponseSenderBlock)callback) {
+RCT_EXPORT_METHOD(addPlacement:(NSString *)placementName resolve:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
   if ([Tapjoy isConnected]) {
+    if ([placementMap objectForKey:placementName] || [placementListenerMap objectForKey:placementName]) {
+      [placementMap removeObjectForKey:placementName];
+      [placementListenerMap removeObjectForKey:placementName];
+    }
 
-      if ([placementMap objectForKey:placementName] || [placementListenerMap objectForKey:placementName]) {
-        [placementMap removeObjectForKey:placementName];
-        [placementListenerMap removeObjectForKey:placementName];
-      }
-    
-    TapjoyPlacementListener *placementListener = [[TapjoyPlacementListener alloc] initWithPlacementName:placementName tapjoyModule:self];
+    TapjoyPlacementListener *placementListener = [[TapjoyPlacementListener alloc] initWithTapjoyModule:self];
     TJPlacement *placement = [TJPlacement placementWithName:placementName delegate:placementListener ];
-    
+
     [placementMap setObject:placement forKey:placementName];
     [placementListenerMap setObject:placementListener forKey:placementName];
+    resolve(@"Tapjoy placement added.");
   } else {
-    NSLog(@"Tapjoy is not connected.");
-    NSDictionary *responseProps = @{
-                                    @"error": @"Tapjoy iOS not connected."
-                                    };
-    callback(@[[NSNull null], responseProps]);
+      [TapjoyModule rejectPromise:reject withMessage:@"Tapjoy is not connected."];
   }
 }
 
-
 RCT_EXPORT_METHOD(showPlacement:(NSString *)placementName resolve:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
-  NSLog(@"Tapjoy showPlacement");
   if ([Tapjoy isConnected]) {
     TJPlacement *placement = [placementMap objectForKey:placementName];
-    
+
     if (placement) {
-        dispatch_async(dispatch_get_main_queue(),  ^(void) {
-          [placement showContentWithViewController: [UIApplication sharedApplication].delegate.window.rootViewController];
-        });
-      resolve(nil);
+      dispatch_async(dispatch_get_main_queue(),  ^(void) {
+        TapjoyPlacementListener* listener = [placementListenerMap objectForKey:placementName];
+
+        if (listener != nil) {
+          [listener setShowPromiseResolve:resolve];
+          [listener setShowPromiseReject:reject];
+        }
+
+        [placement showContentWithViewController: [UIApplication sharedApplication].delegate.window.rootViewController];
+      });
     } else {
       [TapjoyModule rejectPromise:reject withMessage:@"Tapjoy showPlacement error"];
     }
   } else {
-    NSLog(@"Tapjoy is not connected");
     [TapjoyModule rejectPromise:reject withMessage:@"Tapjoy is not connected"];
   }
 }
 
 RCT_EXPORT_METHOD(requestContent:(NSString *)placementName resolve:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
-  NSLog(@"Tapjoy requestContent");
   if ([Tapjoy isConnected]) {
     TJPlacement *placement = [placementMap objectForKey:placementName];
+
+    TapjoyPlacementListener* listener = [placementListenerMap objectForKey:placementName];
+
+    if (listener != nil) {
+      [listener setRequestPromiseResolve:resolve];
+      [listener setRequestPromiseReject:reject];
+    }
+
     [placement requestContent];
-    resolve(nil);
   } else {
-    NSLog(@"Tapjoy is not connected");
     [TapjoyModule rejectPromise:reject withMessage:@"Tapjoy is not connected"];
   }
 }
 
 RCT_EXPORT_METHOD(getCurrencyBalance:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
-  NSLog(@"Tapjoy getCurrencyBalanceWithCompletion");
   if ([Tapjoy isConnected]) {
     [Tapjoy getCurrencyBalanceWithCompletion:^(NSDictionary *parameters, NSError *error) {
       if (error != nil) {
-        NSLog(@"Tapjoy getCurrencyBalanceWithCompletion error");
         [TapjoyModule rejectPromise:reject withError:error];
       } else {
-        NSLog(@"Tapjoy getCurrencyBalanceWithCompletion no error");
-        
-        NSDictionary *responseProps = @{
-                                        @"value": parameters[@"amount"],
-                                        @"currencyBalance": parameters[@"currencyName"]
-                                        };
-  
-        resolve(responseProps);
+        resolve(@{
+                  @"amount": parameters[@"amount"],
+                  @"currencyName": parameters[@"currencyName"],
+                  @"currencyID": parameters[@"currencyID"]
+                });
       }
     }];
   } else {
-    NSLog(@"Tapjoy is not connected");
     [TapjoyModule rejectPromise:reject withMessage:@"Tapjoy is not connected"];
   }
 }
 
 RCT_EXPORT_METHOD(spendCurrencyAction:(nonnull NSNumber*)amount resolve:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
-  NSLog(@"Tapjoy spendCurrencyAction");
-  
   [Tapjoy getCurrencyBalanceWithCompletion:^(NSDictionary *parameters, NSError *error) {
     if (error != nil) {
-      NSLog(@"Tapjoy getCurrencyBalanceWithCompletion error");
+      [TapjoyModule rejectPromise:reject withError:error];
     } else {
       NSNumber *balance = parameters[@"amount"];
-      
+
       if (balance.integerValue - amount.integerValue >= 0) {
         [Tapjoy spendCurrency:amount.integerValue completion:^(NSDictionary *parameters, NSError *error) {
           if (error) {
@@ -142,45 +139,33 @@ RCT_EXPORT_METHOD(spendCurrencyAction:(nonnull NSNumber*)amount resolve:(RCTProm
         }];
       } else {
         [TapjoyModule rejectPromise:reject withMessage:@"Not enough currency"];
-        NSLog(@"Tapjoy spendCurrency error");
       }
     }
   }];
 }
 
-RCT_EXPORT_METHOD(listenForEarnedCurrency:(RCTResponseSenderBlock)callback) {
+RCT_EXPORT_METHOD(listenForEarnedCurrency:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
   [Tapjoy trackEvent:TJC_CURRENCY_EARNED_NOTIFICATION category:nil parameter1:nil parameter2:nil];
-  
-  NSLog(@"Tapjoy listenForEarnedCurrency");
+
   if ([Tapjoy isConnected]) {
     // Add an observer for when a user has successfully earned currency.
     [[NSNotificationCenter defaultCenter] addObserver:self
                                              selector:@selector(showEarnedCurrencyAlert:)
                                                  name:TJC_CURRENCY_EARNED_NOTIFICATION
                                                object:nil];
+    resolve(@"Listening for earned currency.");
   } else {
-    NSLog(@"Tapjoy is not connected");
-    NSDictionary *responseProps = @{
-                                    @"error": @"Tapjoy iOS not connected."
-                                    };
-    callback(@[[NSNull null], responseProps]);
+    [TapjoyModule rejectPromise:reject withMessage:@"Tapjoy is not connected"];
   }
 }
 
 - (void)showEarnedCurrencyAlert:(NSNotification*)notifyObj
 {
-  NSNumber *currencyEarned = notifyObj.object;
-  int earnedNum = [currencyEarned intValue];
-  
-  NSLog(@"Currency earned: %d", earnedNum);
-  
-  NSDictionary *evt = @{
-                        @"currency": @"",
-                        @"value": currencyEarned
-                        };
-  
-  [self sendJSEvent:TJ_EARNED_CURRENCY_EVENT props: evt];
-  
+  [self sendJSEvent:TJ_EVENT_EARNED_CURRENCY props: @{
+                                                      @"currencyName": @"",
+                                                      @"amount": notifyObj.object
+                                                    }];
+
   // Pops up a UIAlert notifying the user that they have successfully earned some currency.
   // This is the default alert, so you may place a custom alert here if you choose to do so.
   //[Tapjoy showDefaultEarnedCurrencyAlert];
@@ -199,32 +184,34 @@ RCT_EXPORT_METHOD(listenForEarnedCurrency:(RCTResponseSenderBlock)callback) {
 
 -(void)tjcConnectSuccess:(NSNotification*)notifyObj
 {
-  NSDictionary *responseProps = @{
-                                  @"info": @"Tapjoy iOS connect success."
-                                  };
-  NSLog(@"Tapjoy connect Succeeded");
-  
-  if (m_callback != nil) {
-    m_callback(@[[NSNull null], responseProps]);
+  if (mResolve != nil) {
+    mResolve(@{
+               @"info": @"Tapjoy iOS connect success."
+               });
+    mResolve = nil;
   }
-  m_callback = nil;
 }
 
 - (void)tjcConnectFail:(NSNotification*)notifyObj
 {
-  NSDictionary *responseProps = @{
-                                  @"error": @"Tapjoy iOS connect failure."
-                                  };
-  NSLog(@"Tapjoy connect Failed");
-  
-  if (m_callback != nil) {
-    m_callback(@[responseProps]);
+  if (mReject != nil) {
+      [TapjoyModule rejectPromise:mReject withMessage:@"Tapjoy iOS connect failure."];
   }
-  m_callback = nil;
+  mReject = nil;
 }
 
 - (NSArray<NSString *> *)supportedEvents {
-  return @[TJ_EARNED_CURRENCY_EVENT, TJ_PLACEMENT_OFFERWALL_EVENT, @"placementEvent"];
+  return @[TJ_EVENT_EARNED_CURRENCY, TJ_EVENT_PLACEMENT_DISMISS, TJ_EVENT_PLACEMENT_CONTENT_READY, TJ_EVENT_PLACEMENT_REWARD_REQUEST, TJ_EVENT_PLACEMENT_PURCHASE_REQUEST];
+}
+
+- (NSDictionary *)constantsToExport
+{
+  return @{ @"events" : [self supportedEvents] };
+};
+
++ (BOOL)requiresMainQueueSetup
+{
+  return NO;  // only do this if your module initialization relies on calling UIKit!
 }
 
 #pragma mark - Helper Fuctions

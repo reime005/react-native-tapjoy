@@ -1,6 +1,20 @@
-## React Native Tapjoy
+<p>&nbsp;</p>
+<p align="center">
+  <h1 align='center'>React Native Tapjoy<p>&nbsp;</p></h1>
+</p>
+<p>&nbsp;</p>
+
+<p>
 
 This module provides react-native bindings for the [Tapjoy SDK](https://home.tapjoy.com/developers/).
+
+</p>
+
+<p>&nbsp;</p>
+
+[![npm](https://img.shields.io/npm/v/react-native-tapjoy.svg?style=flat-square)](http://npm.im/react-native-tapjoy)
+![GitHub](https://img.shields.io/github/license/reime005/react-native-tapjoy.svg?style=flat-square)
+[![CircleCI](https://circleci.com/gh/reime005/react-native-tapjoy.svg?style=svg)](https://circleci.com/gh/reime005/react-native-tapjoy)
 
 ## About Tapjoy
 
@@ -12,15 +26,20 @@ React Native lets you build mobile apps using only JavaScript. It uses the same 
 
 ## Install
 
-### Built for react native version >= 0.41.2
+### Tested with react native version 0.60.0
 
     npm install react-native-tapjoy@latest --save
 
-### Automatic Installation
+### Automatic Installation (react native version < 0.60.0)
 
     react-native link
 
-### Manual Installation
+<details>
+<summary>
+<b>
+Manual Installation (react native version < 0.60.0)
+</b>
+</summary>
 
 #### iOS
 
@@ -28,6 +47,14 @@ React Native lets you build mobile apps using only JavaScript. It uses the same 
 2. Go to `node_modules` ➜ `react-native-tapjoy` ➜ `ios` ➜ select `RNTapjoy.xcodeproj`
 3. Add `libRNTapjoy.a` to `Build Phases -> Link Binary With Libraries`
 4. Add the Tapjoy SDK to your XCode project as described on the Tapjoy website
+
+Alertnatively, you may use the podspec file:
+
+```
+  ...
+  pod 'RNTapjoy', :path => '../node_modules/react-native-tapjoy'
+  ...
+```
 
 NOTE: You have to manually integrate the Push notifications feature as described on the Tapjoy website, because it requires access to the didFinishLaunchingWithOptions:` method in your application’s app delegate file.
 
@@ -38,22 +65,22 @@ NOTE: You have to manually integrate the Push notifications feature as described
     include ':react-native-tapjoy'
     project(':react-native-tapjoy').projectDir = new File(rootProject.projectDir, '../node_modules/react-native-tapjoy/android')
 
-2. Update the android build tools version to `2.2.+` in `android/build.gradle`:
+2. Update the android build tools version to `3.4.1` in `android/build.gradle`:
     ```gradle
     buildscript {
         ...
         dependencies {
-            classpath 'com.android.tools.build:gradle:2.2.+' // <- USE 2.2.+ version
+            classpath 'com.android.tools.build:gradle:3.4.1'
         }
         ...
     }
     ...
     ```
 
-3. Update the gradle version to `2.14.1` in `android/gradle/wrapper/gradle-wrapper.properties`:
+3. Update the gradle version to `5.4.1` in `android/gradle/wrapper/gradle-wrapper.properties`:
     ```
     ...
-    distributionUrl=https\://services.gradle.org/distributions/gradle-2.14.1-all.zip
+    distributionUrl=https\://services.gradle.org/distributions/gradle-5.4.1-all.zip
     ```
 
 4. Add the compile line to the dependencies in `android/app/build.gradle`:
@@ -65,7 +92,7 @@ NOTE: You have to manually integrate the Push notifications feature as described
 
 5. Add the import and link the package in `MainApplication.java`:
     ```java
-    import de.reimerm.tapjoy.TapjoyPackage; // <-- add this import
+    import com.mariusreimer.tapjoy.TapjoyPackage; // <-- add this import
 
     public class MainApplication extends Application implements ReactApplication {
         @Override
@@ -80,9 +107,23 @@ NOTE: You have to manually integrate the Push notifications feature as described
 
 6. Add the Tapjoy SDK to your Android project as described on the Tapjoy website.
 
+<details>
+<summary>
+<b>
+Windows
+</b>
+</summary>
+
+![](https://media.giphy.com/media/44Eq3Ab5LPYn6/giphy.gif)
+
+</details>
+</details>
+
 ## Usage
 
-    import Tapjoy from 'react-native-tapjoy';
+TypeScript definitions are included.
+
+### Configuration
 
     const options = {
         sdkKeyIos: "12345",
@@ -91,61 +132,193 @@ NOTE: You have to manually integrate the Push notifications feature as described
         debug: true
     };
 
+### Initialization (without React Hooks)
+
+    import { Tapjoy } from 'react-native-tapjoy';
+
     const tapjoy = new Tapjoy(options);
 
-### Initialization
+    try {
+        const initialized = await tapjoy.initialse();
+        // tapjoy is initialized
+    } catch (e) {
+        // error on initialization
+    }
 
-    tapjoy.initialise()
-            .then((info) => {
-                console.log(info);
-                // Connect successful
-                // You may add placements here
-            })
-            .catch((error) => console.log(error));
+### Initialization (with React Hooks)
 
-### Add Placement
+    import { useEffect } from 'react';
+    import { useTapjoy } from 'react-native-tapjoy';
 
-    tapjoy.addPlacement("TestPlacement", function (evt) {
-            if (evt.onContentDismiss) {
-                // You may want to refresh the currency balance here,
-                // or request new content
-            } else if (evt.onRequestSuccess) {
-            } else if (evt.onRequestFailure) {
-                console.log(evt.errorMessage);
-            } else if (evt.onContentReady) {
-            } else if (evt.onContentShow) {
-            } else if (evt.onPurchaseRequest) {
-                console.log("Request ID: " + evt.requestId);
-                console.log("Token: " + evt.token);
-                console.log("Product ID: " + evt.productId);
-            } else if (evt.onRewardRequest) {
-                console.log("Request ID: " + evt.requestId);
-                console.log("Token: " + evt.token);
-                console.log("Item ID: " + evt.itemId);
-                console.log("Quantity: " + evt.quantity);
-            }
-        }).catch((error) => console.log(error));
+    const [
+        {
+            tapjoyEvents
+        },
+        {
+            initialiseTapjoy,
+            listenToEvent,
+            addTapjoyPlacement,
+            showTapjoyPlacement,
+            requestTapjoyPlacementContent,
+            isTapjoyConnected,
+            tapjoyListenForEarnedCurrency,
+            getTapjoyCurrencyBalance,
+            setTapjoyUserId,
+            spendTapjoyCurrency,
+        },
+    ] = useTapjoy(tapjoyOptions);
 
-### Request Content
+    useEffect(() => {
+        try {
+            const initialized = await initialiseTapjoy();
+            // tapjoy is initialized
+        } catch (e) {
+            // error on initialization
+        }
+    }, []);
 
-    tapjoy.requestContent("TestPlacement")
-            .catch((error) => console.log(error));
+### List of Events
 
-### Show Placement
+This is a list of events you may subscribe to:
 
-    tapjoy.showPlacement("TestPlacement")
-            .catch((error) => console.log(error));
+|Event Name|Description|
+|---|---|
+|`earnedCurrency`|Fired when currency was earned. The response contains the fields `amount` `currencyName` and `currencyID` (iOS only). |
+|`onPlacementDismiss`|Fired when a shown placement was dismissed. The response contains the field `placementName`. |
+|`onPlacementContentReady`|Fired when a placement's content is ready to be shown. The response contains the field `placementName`. |
+|`onPurchaseRequest`|Fired when a purchase is requested. The response contains the fields `placementName`, `requestId`, `token` and `productId`. |
+|`onRewardRequest`| Fired when a reward is requested. The response contains the fields `placementName`, `requestId`, `token`, `itemId` and `quantity`. |
 
-### Get Currency Balance
+### Listen for Events (without React Hooks)
 
-    tapjoy.getCurrencyBalance()
-            .then((resp) => {
-                console.log("Your currency balance: " + resp.value + " " + resp.currencyBalance);
-            })
-            .catch((error) => console.log(error));
+    tapjoy._on(eventName, () => {
+        // event has fired
+    })
 
-### Listen for earned currency
+You may get a list of events from the constants: `tapjoy.constants`. It contains a `events` field.
 
-    tapjoy.listenForEarnedCurrency(function (evt) {
-                console.log("Currently earned " + evt.value + " " + evt.currency);
-            }).catch((error) => console.log(error));
+### Listen for Events (with React Hooks)
+
+    listenToEvent(eventName, () => {
+        // event has fired
+    })
+
+You may get a list of events from `useTapjoy` hook, named `tapjoyEvents`.
+
+### Add Placement (without React Hooks)
+
+    try {
+        await tapjoy.addPlacement();
+        // tapjoy placement was added
+    } catch (e) {
+        // error
+    }
+
+### Add Placement (with React Hooks)
+
+    useEffect(() => {
+        try {
+            await addTapjoyPlacement('TestPlacement');
+            // tapjoy placement was added
+        } catch (e) {
+            // error
+        }
+    }, []);
+
+### Request Content (without React Hooks)
+
+    try {
+        await tapjoy.requestContent('TestPlacement');
+        // tapjoy placement content request was successful
+    } catch (e) {
+        // request failed
+    }
+
+### Request Content (with React Hooks)
+
+    useEffect(() => {
+        try {
+            await requestTapjoyPlacementContent('TestPlacement');
+            // tapjoy placement content request was successful
+        } catch (e) {
+            // request failed
+        }
+    }, []);
+
+### Show Placement (without React Hooks)
+
+    try {
+        await tapjoy.showPlacement('TestPlacement');
+        // tapjoy placement content is showing
+    } catch (e) {
+        // placement not added, or content not ready
+    }
+
+### Show Placement (with React Hooks)
+
+    useEffect(() => {
+        try {
+            await showTapjoyPlacement('TestPlacement');
+            // tapjoy placement content is showing
+        } catch (e) {
+            // placement not added, or content not ready
+        }
+    }, []);
+
+### Listen for Earned Currency (without React Hooks)
+
+    try {
+        await tapjoy.listenForEarnedCurrency(({ amount, currencyName, currencyID }) => {
+            // user earned currency
+        });
+    } catch (e) {
+        // error
+    }
+
+### Listen for Earned Currency (with React Hooks)
+
+    useEffect(() => {
+        try {
+            await tapjoyListenForEarnedCurrency(({ amount, currencyName, currencyID }) => {
+                // user earned currency
+            });
+        } catch (e) {
+        // error
+        }
+    }, []);
+
+### Get Currency Balance (without React Hooks)
+
+    try {
+        const { amount, currencyName } = await tapjoy.getCurrencyBalance();
+    } catch (e) {
+        // error
+    }
+
+### Get Currency Balance (with React Hooks)
+
+    useEffect(() => {
+        try {
+            const { amount, currencyName } = await getTapjoyCurrencyBalance();
+        } catch (e) {
+            // error
+        }
+    }, []);
+
+### Spend Currency (without React Hooks)
+
+    try {
+        await tapjoy.spendCurrencyAction(42);
+    } catch (e) {
+        // error
+    }
+
+### Spend Currency (with React Hooks)
+
+    useEffect(() => {
+        try {
+            await spendTapjoyCurrency(42);
+        } catch (e) {
+            // error
+        }
+    }, []);

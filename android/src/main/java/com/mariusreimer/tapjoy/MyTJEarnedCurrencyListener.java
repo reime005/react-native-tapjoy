@@ -14,7 +14,7 @@ public class MyTJEarnedCurrencyListener implements TJEarnedCurrencyListener {
 
     private final ReactContext reactContext;
 
-    public MyTJEarnedCurrencyListener(ReactContext reactContext) {
+    MyTJEarnedCurrencyListener(ReactContext reactContext) {
         this.reactContext = reactContext;
     }
 
@@ -25,6 +25,6 @@ public class MyTJEarnedCurrencyListener implements TJEarnedCurrencyListener {
         responseMap.putString(TapjoyModule.EARNED_CURRENCY_NAME, currencyName);
         responseMap.putInt(TapjoyModule.EARNED_CURRENCY_VALUE, amount);
 
-        reactContext.getJSModule(DeviceEventManagerModule.RCTDeviceEventEmitter.class).emit(TapjoyModule.EVENT_EARNED_CURRENCY, responseMap);
+        reactContext.getJSModule(DeviceEventManagerModule.RCTDeviceEventEmitter.class).emit(TapjoyModule.Events.EVENT_PLACEMENT_EARNED_CURRENCY.toString(), responseMap);
     }
 }

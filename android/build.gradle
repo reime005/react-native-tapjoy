@@ -1,54 +1,58 @@
+def safeExtGet(prop, fallback) {
+    rootProject.ext.has(prop) ? rootProject.ext.get(prop) : fallback
+}
+
 buildscript {
     repositories {
-        jcenter()
+        google()
         maven {
-            url 'https://maven.fabric.io/public'
+            url 'https://maven.google.com'
         }
+        jcenter()
     }
+
     dependencies {
-        classpath 'com.android.tools.build:gradle:2.3.3'
-        classpath 'io.fabric.tools:gradle:1.24.4'
+        classpath 'com.android.tools.build:gradle:3.3.1'
     }
 }
 
 apply plugin: 'com.android.library'
 
 android {
-    compileSdkVersion 26
-    buildToolsVersion "25.0.3"
+    compileSdkVersion safeExtGet('compileSdkVersion', 28)
+    buildToolsVersion safeExtGet('buildToolsVersion', '28.0.3')
+
     defaultConfig {
-        minSdkVersion 16
-        targetSdkVersion 26
-        versionCode 1
-        versionName "1.0"
-        // multiDexEnabled true
+        minSdkVersion safeExtGet('minSdkVersion', 16)
+        targetSdkVersion safeExtGet('targetSdkVersion', 28)
     }
+
     buildTypes {
         release {
             minifyEnabled false
         }
     }
-    productFlavors {
+
+    lintOptions {
+        abortOnError false
+        warning 'InvalidPackage'
     }
 }
 
-
-
-
-
-allprojects {
-    repositories {
-        jcenter()
-        mavenLocal()
-        mavenCentral()
-        maven {
-            url "https://maven.google.com"
-        }
+repositories {
+    google()
+    jcenter()
+    maven {
+        url 'https://maven.google.com'
+    }
+    maven { url "https://jitpack.io" }
+    maven {
+        // All of React Native (JS, Obj-C sources, Android binaries) is installed from npm
+        url "$rootDir/../node_modules/react-native/android"
     }
 }
 
 dependencies {
-    compile fileTree(include: ['*.jar'], dir: 'libs')
-    compile "com.facebook.react:react-native:+"  // From node_modules
-    compile 'com.tapjoy:tapjoy-android-sdk:11.11.1@aar'
+    implementation 'com.facebook.react:react-native:+'
+    implementation 'com.tapjoy:tapjoy-android-sdk:12.3.1'
 }
