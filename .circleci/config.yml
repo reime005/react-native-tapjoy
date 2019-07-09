@@ -37,12 +37,3 @@ jobs:
 
       # run tests!
       - run: yarn test
-workflows:
-  version: 2
-  build-and-deploy:
-    jobs:
-      - build
-      - deploy:
-          filters:
-            branches:
-              only: master
