@@ -1,5 +1,6 @@
 import { Component, ReactNode } from 'react';
 import { ViewProperties, EmitterSubscription } from 'react-native';
+import { EventEmitter } from 'events';
 
 type TapjoyEvent = string;
 
@@ -20,10 +21,10 @@ interface Currency {
   currencyID?: string;
 }
 
-class Tapjoy extends Component<RNTapjoyProps & ViewProperties> {
+export class Tapjoy extends Component<RNTapjoyProps & ViewProperties> {
   static constants: Constants;
 
-  setUserId(userId: number): Promise<>;
+  setUserId(userId: string): Promise<>;
   initialise(): Promise<>;
   spendCurrency(amount: number): Promise<>;
   isConnected(): Promise<boolean>;
@@ -32,7 +33,7 @@ class Tapjoy extends Component<RNTapjoyProps & ViewProperties> {
   showPlacement(name: string): Promise<string>;
   getCurrencyBalance(): Promise<Currency>;
   listenForEarnedCurrency(): Promise<Currency>;
-  _on(eventName: string, callback: () => {}): Promise<EventEmitte>;
+  _on(eventName: string, callback: () => void): Promise<EventEmitter>;
 }
 
 type HookReturn = [
@@ -55,9 +56,7 @@ type HookReturn = [
     getTapjoyCurrencyBalance: (eventName: TapjoyEvent) => Promise<Currency>;
     setTapjoyUserId: (userId: string) => Promise<>;
     spendTapjoyCurrency: (amount: number) => Promise<>;
-  }
+  },
 ];
 
-const useTapjoy = (options: RNTapjoyProps): HookReturn => {};
-
-export const { useTapjoy, Tapjoy };
+export function useTapjoy(options: RNTapjoyProps): HookReturn;
