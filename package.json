@@ -69,6 +69,14 @@
     "@babel/preset-react": "^7.0.0",
     "@babel/preset-typescript": "^7.3.3",
     "@babel/register": "^7.4.0",
+    "@commitlint/cli": "^8.2.0",
+    "@commitlint/config-conventional": "^8.2.0",
+    "@commitlint/prompt": "^8.2.0",
+    "@semantic-release/commit-analyzer": "^6.3.3",
+    "@semantic-release/git": "^7.0.18",
+    "@semantic-release/github": "^5.5.5",
+    "@semantic-release/npm": "^5.3.4",
+    "@semantic-release/release-notes-generator": "^7.3.5",
     "@types/jest": "^24.0.11",
     "@types/react": "16.8.3",
     "@types/react-native": "^0.57.47",
@@ -179,10 +187,40 @@
     "dist/",
     "*.ts"
   ],
+  "release": {
+    "plugins": [
+      "@semantic-release/commit-analyzer",
+      "@semantic-release/npm",
+      [
+        "@semantic-release/github",
+        {
+          "assets": [
+            "package.json"
+          ],
+          "message": "chore(release): ${nextRelease.version} [skip ci]\n\n${nextRelease.notes}"
+        }
+      ],
+      [
+        "@semantic-release/git",
+        {
+          "assets": [
+            "package.json"
+          ],
+          "message": "chore(release): ${nextRelease.version} [skip ci]\n\n${nextRelease.notes}"
+        }
+      ],
+      "@semantic-release/release-notes-generator"
+    ]
+  },
   "prettier": {
     "semi": true,
     "singleQuote": true,
     "trailingComma": "all",
     "parser": "typescript"
+  },
+  "config": {
+    "commitizen": {
+      "path": "@commitlint/prompt"
+    }
   }
 }
