@@ -14,7 +14,7 @@ This module provides react-native bindings for the [Tapjoy SDK](https://home.tap
 
 [![npm](https://img.shields.io/npm/v/react-native-tapjoy.svg?style=flat-square)](http://npm.im/react-native-tapjoy)
 ![GitHub](https://img.shields.io/github/license/reime005/react-native-tapjoy.svg?style=flat-square)
-![Github Actions Status](https://github.com/reime005/react-native-tapjoy/workflows/main/badge.svg)
+![Github Actions Status](https://github.com/reime005/react-native-tapjoy/workflows/Main/badge.svg)
 
 ## About Tapjoy
 
