@@ -41,7 +41,8 @@
     "precommit": "lint-staged && npm run test",
     "test": "jest --passWithNoTests",
     "test:coverage": "npm run test -- --coverage",
-    "test:coverage:deploy": "npm run test:coverage && codecov"
+    "test:coverage:deploy": "npm run test:coverage && codecov",
+    "release": "semantic-release"
   },
   "resolutions": {
     "@types/react": "^16.8.6",
@@ -51,10 +52,10 @@
     "prop-types": "^15.7.2"
   },
   "dependencies": {
+    "prop-types": "^15.7.2",
     "shallowequal": "^1.1.0",
     "type-zoo": "^3.3.0",
-    "typelevel-ts": "^0.3.5",
-    "prop-types": "^15.7.2"
+    "typelevel-ts": "^0.3.5"
   },
   "devDependencies": {
     "@babel/cli": "^7.4.3",
@@ -111,6 +112,7 @@
     "react-native": "^0.60.0",
     "react-testing-library": "^6.1.2",
     "rimraf": "^2.6.3",
+    "semantic-release": "^15.14.0",
     "ts-jest": "^24.0.2",
     "ts-node": "^8.1.0",
     "tslib": "^1.9.3",

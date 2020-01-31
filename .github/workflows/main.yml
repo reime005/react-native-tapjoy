@@ -4,7 +4,7 @@ on: [push, pull_request]
 
 jobs:
   main:
-    runs-on: ubuntu-latest
+    runs-on: macos-latest
     if: "!contains(github.event.head_commit.message, '[skip ci]')"
 
     steps:
@@ -34,4 +34,4 @@ jobs:
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
-      run: npx semantic-release
+      run: yarn release
