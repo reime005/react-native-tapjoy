@@ -15,6 +15,7 @@ This module provides react-native bindings for the [Tapjoy SDK](https://home.tap
 [![npm](https://img.shields.io/npm/v/react-native-tapjoy.svg?style=flat-square)](http://npm.im/react-native-tapjoy)
 ![GitHub](https://img.shields.io/github/license/reime005/react-native-tapjoy.svg?style=flat-square)
 ![Github Actions Status](https://github.com/reime005/react-native-tapjoy/workflows/Main/badge.svg)
+[![semantic-release](https://img.shields.io/badge/%20%20%F0%9F%93%A6%F0%9F%9A%80-semantic--release-e10079.svg)](https://github.com/semantic-release/semantic-release)
 
 ## About Tapjoy
 
@@ -28,7 +29,11 @@ React Native lets you build mobile apps using only JavaScript. It uses the same 
 
 ### Tested with react native version 0.60.0
 
-    npm install react-native-tapjoy@latest --save
+    npm install react-native-tapjoy --save
+
+or:
+
+    yarn add react-native-tapjoy
 
 ### Automatic Installation (react native version < 0.60.0)
 
