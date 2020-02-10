@@ -8,11 +8,15 @@ buildscript {
         maven {
             url 'https://maven.google.com'
         }
+        maven {
+            name "Tapjoy's maven repo"
+            url "https://tapjoy.bintray.com/maven"
+        }
         jcenter()
     }
 
     dependencies {
-        classpath 'com.android.tools.build:gradle:3.3.1'
+        classpath 'com.android.tools.build:gradle:3.5.2'
     }
 }
 
@@ -54,5 +58,5 @@ repositories {
 
 dependencies {
     implementation 'com.facebook.react:react-native:+'
-    implementation 'com.tapjoy:tapjoy-android-sdk:12.4.2'
+    api 'com.tapjoy:tapjoy-android-sdk:12.4.2@aar'
 }
