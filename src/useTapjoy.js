@@ -33,7 +33,7 @@ export const useTapjoy = options => {
   }, []);
 
   const spendTapjoyCurrency = useCallback((amount: number) => {
-    return tapjoy.current.spendCurrencyAction(amount);
+    return tapjoy.current.spendCurrency(amount);
   }, []);
 
   const setTapjoyUserId = useCallback((userID: number) => {
