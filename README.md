@@ -144,7 +144,7 @@ TypeScript definitions are included.
     const tapjoy = new Tapjoy(options);
 
     try {
-        const initialized = await tapjoy.initialse();
+        const initialized = await tapjoy.initialise();
         // tapjoy is initialized
     } catch (e) {
         // error on initialization
