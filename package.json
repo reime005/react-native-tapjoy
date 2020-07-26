@@ -1,7 +1,7 @@
 {
   "name": "react-native-tapjoy",
   "description": "A React Native module that allows you to use the native Tapjoy advertiser SDK.",
-  "version": "2.4.2",
+  "version": "2.4.3",
   "license": "MIT",
   "main": "src/index.js",
   "author": "Marius Reimer (reime005) <reime005@gmail.com> (https://mariusreimer.com)",
