@@ -16,7 +16,6 @@
 #import <Tapjoy/TJPlacement.h>
 #import <React/RCTLog.h>
 #import "TapjoyPlacementListener.h"
-#import "AppDelegate.h"
 
 @interface TapjoyModule : RCTEventEmitter <RCTBridgeModule> {
   RCTPromiseResolveBlock mResolve;
@@ -27,7 +26,7 @@
   Boolean listening;
 }
 
-@property (nonatomic, retain) AppDelegate *viewController;
+@property (nonatomic, retain) UIViewController *viewController;
 
 - (void) sendJSEvent:(NSString *)title props:(NSDictionary *)props;
 
