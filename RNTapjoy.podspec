@@ -38,11 +38,4 @@ Pod::Spec.new do |s|
     ss.source_files = "ios/RN/**/*.{h,m}"
   end
 
-  s.xcconfig = {
-    'HEADER_SEARCH_PATHS' => [
-        "$(inherited)",
-        "${SRCROOT}/../../React/**",
-        "${SRCROOT}/../../node_modules/react-native/**"
-      ].join(' ')
-  }
 end
