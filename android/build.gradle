@@ -9,8 +9,9 @@ buildscript {
             url 'https://maven.google.com'
         }
         maven {
+            // TapJoy SDK
             name "Tapjoy's maven repo"
-            url "https://tapjoy.bintray.com/maven"
+            url "https://sdk.tapjoy.com/"
         }
         jcenter()
     }
