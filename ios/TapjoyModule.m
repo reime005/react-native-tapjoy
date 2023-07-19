@@ -91,14 +91,23 @@ RCT_EXPORT_METHOD(requestContent:(NSString *)placementName resolve:(RCTPromiseRe
   if ([Tapjoy isConnected]) {
     TJPlacement *placement = [placementMap objectForKey:placementName];
 
-    TapjoyPlacementListener* listener = [placementListenerMap objectForKey:placementName];
-
-    if (listener != nil) {
-      [listener setRequestPromiseResolve:resolve];
-      [listener setRequestPromiseReject:reject];
+    if (placement) {
+      if ([placement isContentReady]) {
+        resolve(@"Placement content is ready.");
+        return;
+      }
+        
+      TapjoyPlacementListener* listener = [placementListenerMap objectForKey:placementName];
+        
+      if (listener != nil) {
+        [listener setRequestPromiseResolve:resolve];
+        [listener setRequestPromiseReject:reject];
+      }
+        
+      [placement requestContent];
+    } else {
+      [TapjoyModule rejectPromise:reject withMessage:@"Placement not created."];
     }
-
-    [placement requestContent];
   } else {
     [TapjoyModule rejectPromise:reject withMessage:@"Tapjoy is not connected"];
   }
